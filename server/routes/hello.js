@@ -4,7 +4,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', (req, res) => {
-  res.json({ data: 'Hello from Chat\'s microservice' });
+  res.json({ data: 'Hello from Messages\' microservice' });
 });
 
 export default router;
