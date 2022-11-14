@@ -19,5 +19,6 @@ app.use(compression());
 
 app.use('/api/v1', routes.hello);
 app.use('/api/v1/messages', routes.messages);
+app.use('/api/v1/rooms', require('./routes/roomsRoutes'));
 
 module.exports = app;
