@@ -1,2 +1,7 @@
-export { default as messages } from './messages';
-export { default as hello } from './hello';
+const hello = require('./hello').default;
+const messages = require('./messages').default;
+
+module.exports = {
+  hello,
+  messages
+};

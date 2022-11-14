@@ -1,4 +1,4 @@
-import * as Message from '../models/Message';
+const Message = require('../models/Message');
 
 const getAllMessages = (req, res) => {
   const messages = Message.getAll();

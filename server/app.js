@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import express from 'express';
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import helmet from 'helmet';
-import logger from 'morgan';
-import * as routes from './routes';
+const express = require('express');
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const helmet = require('helmet');
+const logger = require('morgan');
+const routes = require('./routes');
 
 const app = express();
 
