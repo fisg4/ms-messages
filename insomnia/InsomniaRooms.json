@@ -1,0 +1,215 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2022-11-15T12:14:21.696Z",
+    "__export_source": "insomnia.desktop.app:v2022.6.0",
+    "resources": [
+        {
+            "_id": "req_1c64be8c2b324170990eac1fbc5e21f2",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513838427,
+            "created": 1668439547155,
+            "url": "{{ _.PROTOCOL }}://{{ _.HOST }}:{{ _.PORT }}/api/{{ _.VERSION }}/rooms",
+            "name": "GetAllRooms",
+            "description": "",
+            "method": "GET",
+            "body": {},
+            "parameters": [
+                {
+                    "id": "pair_851f0ce6c81a4dca8fe385810c12bfc4",
+                    "name": "",
+                    "value": "",
+                    "description": ""
+                }
+            ],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": -1668439517678,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
+            "_id": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "parentId": null,
+            "modified": 1668439372944,
+            "created": 1668439372944,
+            "name": "New Document",
+            "description": "",
+            "scope": "design",
+            "_type": "workspace"
+        },
+        {
+            "_id": "req_87db3969efd4458fad23a75a1105ab40",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513015351,
+            "created": 1668439588742,
+            "url": "http://localhost:3001/api/v1/rooms/40",
+            "name": "GetRoomById",
+            "description": "",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": -1668439517628,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
+            "_id": "req_e67e30fd73964d57bedd2a0cf98f6a0f",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513016760,
+            "created": 1668439719035,
+            "url": "http://localhost:3001/api/v1/rooms/",
+            "name": "CreateRoom",
+            "description": "",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n\t\"name\": \"Test\",\n\t\"participants\": \n\t[\n\t\t{\n\t\t\t\"id\": 7,\n\t\t\t\"name\": \"new\"\n\t\t},\n\t\t{\n\t\t\t\"id\": 1,\n\t\t\t\"name\": \"Antonio\"\n\t\t}\n\t]\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": -1668439517553,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
+            "_id": "req_b82c382a32644ec88d52ccef62c6f48b",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513043963,
+            "created": 1668439608931,
+            "url": "http://localhost:3001/api/v1/rooms/32",
+            "name": "DeleteRoomById",
+            "description": "",
+            "method": "DELETE",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": -1668439517528,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
+            "_id": "req_39128f2531584ee5ad4654b100deb8cb",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513018386,
+            "created": 1668439635140,
+            "url": "http://localhost:3001/api/v1/rooms/40/participants",
+            "name": "PatchRoomById",
+            "description": "",
+            "method": "PATCH",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n\t\"name\": \"Nuevo grupo 40\",\n\t\"participants\":[\n\t\t{\n\t\t\t\"id\": 120,\n\t\t\t\"name\": \"JuanLu\"\n\t\t},\n\t\t{\n\t\t\t\"id\": 122,\n\t\t\t\"name\": \"Mario\"\n\t\t}\n\t]\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json",
+                    "id": "pair_475c81abdd4e44938c1443e4ccf5bcf7"
+                },
+                {
+                    "id": "pair_33bd3314efe44c548eaa79a1b81f7675",
+                    "name": "",
+                    "value": "",
+                    "description": ""
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": -1668439517503,
+            "isPrivate": false,
+            "settingStoreCookies": true,
+            "settingSendCookies": true,
+            "settingDisableRenderRequestBody": false,
+            "settingEncodeUrl": true,
+            "settingRebuildPath": true,
+            "settingFollowRedirects": "global",
+            "_type": "request"
+        },
+        {
+            "_id": "env_563fa7e320d91f8b288f06919bdd59ba4e3c7dcd",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513820121,
+            "created": 1668439372973,
+            "name": "Base Environment",
+            "data": {
+                "PROTOCOL": "http",
+                "HOST": "localhost",
+                "PORT": 3001,
+                "VERSION": "v1"
+            },
+            "dataPropertyOrder": {
+                "&": [
+                    "PROTOCOL",
+                    "HOST",
+                    "PORT",
+                    "VERSION"
+                ]
+            },
+            "color": null,
+            "isPrivate": false,
+            "metaSortKey": 1668439372973,
+            "_type": "environment"
+        },
+        {
+            "_id": "jar_563fa7e320d91f8b288f06919bdd59ba4e3c7dcd",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668439372977,
+            "created": 1668439372977,
+            "name": "Default Jar",
+            "cookies": [],
+            "_type": "cookie_jar"
+        },
+        {
+            "_id": "spc_188a941c66c84d0ba48e2214f7292923",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668513032967,
+            "created": 1668439372965,
+            "fileName": "Rooms",
+            "contents": "",
+            "contentType": "yaml",
+            "_type": "api_spec"
+        },
+        {
+            "_id": "uts_b1cb96bcfb3243de8f206b3d0f9c2f9c",
+            "parentId": "wrk_348234e6a09a40628eb94d49e7d751cd",
+            "modified": 1668439372986,
+            "created": 1668439372986,
+            "name": "Example Test Suite",
+            "_type": "unit_test_suite"
+        }
+    ]
+}

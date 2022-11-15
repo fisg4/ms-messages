@@ -1,4 +1,5 @@
 const { Router } = require('express');
+
 const router = Router();
 
 const roomsController = require('../controllers/roomsController');
@@ -11,6 +12,5 @@ router.post('/', roomsController.createRoom);
 router.delete('/:id', roomsController.deleteRoom);
 
 router.patch('/:id/participants', roomsController.updateRoom);
-
 
 module.exports = router;

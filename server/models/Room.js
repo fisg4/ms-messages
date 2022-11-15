@@ -1,18 +1,19 @@
-// const mongoose = require("mongoose");
-// const { Schema } = mongoose;
+const mongoose = require('mongoose');
 
-// const Message = require('./Message');
+const { Schema } = mongoose;
 
-// const roomSchema = new Schema(
-//   {
-//     name: { type: String, default: "New group" },
-//     // participants: { type: [User], default: [] },
-//     participants: { type: [String], default: [] },
-//     messages: { type: [Message], default: []  },
-//   },
-//   {
-//     timestamps: true,
-//   }
-// );
+const Message = require('./Message');
 
-// module.exports = mongoose.model("Room", roomSchema);
+const roomSchema = new Schema(
+  {
+    name: { type: String, default: 'New group' },
+    // participants: { type: [User], default: [] },
+    participants: { type: [String], default: [] },
+    messages: { type: [Message], default: [] },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model('Room', roomSchema);
