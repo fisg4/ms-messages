@@ -93,7 +93,7 @@ roomsController.getRoomById = async (req, res) => {
   } else {
     res.status(404).json({
       success: false,
-      room: null,
+      data: null,
       msg: 'Room could not be found',
     });
   }
@@ -105,7 +105,7 @@ roomsController.deleteRoom = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Room deleted successfully',
-      room: rooms,
+      data: rooms,
     });
   } catch (err) {
     res.status(409).json({
