@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 
-import debugPkg from 'debug';
-import http from 'http';
-import app from '../app';
+const debugPkg = require('debug');
+const http = require('http');
+const app = require('../app');
 
 const debug = debugPkg('js/www:server');
 
