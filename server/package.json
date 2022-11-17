@@ -10,15 +10,15 @@
     "dev": "cross-env NODE_ENV=development npm-run-all build server",
     "prod": "cross-env NODE_ENV=production npm-run-all build server",
     "clean": "rimraf dist",
-    "transpile": "babel ./server --out-dir dist --copy-files",
-    "lint": "eslint ./server",
+    "transpile": "babel ./src --out-dir dist --copy-files",
+    "lint": "eslint ./src",
     "test": "jest",
     "test:watch": "jest --watch"
   },
   "nodemonConfig": {
     "exec": "npm run dev",
     "watch": [
-      "server/*",
+      "src/*",
       "public/*"
     ],
     "ignore": [
