@@ -11,4 +11,7 @@ router.route('/:id')
   .get(messagesController.getMessage)
   .patch(messagesController.editMessageText);
 
+router.route('/:id/report')
+  .patch(messagesController.reportMessage);
+
 export default router;
