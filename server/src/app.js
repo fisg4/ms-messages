@@ -7,6 +7,8 @@ const helmet = require('helmet');
 const logger = require('morgan');
 const routes = require('./routes');
 
+require('./db');
+
 const app = express();
 
 app.use(logger('dev'));
