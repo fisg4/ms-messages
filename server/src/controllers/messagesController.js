@@ -1,5 +1,7 @@
 const { Message } = require('../models');
 
+// TODO: Append message and status to responses
+
 // possibily this could be removed
 const getAllMessages = async (req, res) => {
   const { page = 0, size = 10 } = req.query;
@@ -82,10 +84,20 @@ const reportMessage = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
 
+  if (!id || !userId) {
+    res.status(400).json({ data: {} });
+    return;
+  }
+
   try {
     const message = await Message.getById(id);
     if (!message) {
       res.status(404).json({ data: {} });
+      return;
+    }
+
+    if (message.reportedBy) {
+      res.status(400).json({ data: {} });
       return;
     }
 
@@ -100,6 +112,8 @@ const reportMessage = async (req, res) => {
     res.status(500).json({ data: {} });
   }
 };
+
+// TODO: implement function to update report
 
 module.exports = {
   getAllMessages,

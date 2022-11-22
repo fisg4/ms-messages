@@ -5,11 +5,14 @@ const messageSchema = new Schema({
   roomId: { type: Schema.Types.ObjectId, required: true },
   text: { type: String, required: true, maxLength: 255 },
   replyToId: { type: Schema.Types.ObjectId },
-  reports: {
-    userId: { type: String },
-    madeAt: { type: Date, default: Date.now() }
+  reportedBy: {
+    userId: { type: Schema.Types.ObjectId },
+    madeAt: { type: Date },
+    isBanned: { type: Boolean }
   }
-});
+}, { timestamps: true });
+
+// TODO: Improve error handling (validations)
 
 // static methods
 
@@ -37,8 +40,10 @@ messageSchema.methods.updateText = function updateText(text) {
 };
 
 messageSchema.methods.report = function report(userId) {
-  this.report = { userId };
+  this.reportedBy = { userId, madeAt: Date.now(), isBanned: false };
   return this.save();
 };
+
+// TODO: implement method to update report
 
 module.exports = mongoose.model('Message', messageSchema);
