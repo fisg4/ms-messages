@@ -56,7 +56,7 @@ const editMessageText = async (req, res) => {
   const { id } = req.params;
   const { text } = req.body;
 
-  if (!id || !text) {
+  if (!text) {
     res.status(400).json({ data: {} });
     return;
   }
@@ -84,7 +84,7 @@ const reportMessage = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
 
-  if (!id || !userId) {
+  if (!userId) {
     res.status(400).json({ data: {} });
     return;
   }
