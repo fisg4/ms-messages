@@ -9,7 +9,7 @@ const roomSchema = new Schema(
     name: { type: String, default: 'New group' },
     // participants: { type: [User], default: [] },
     participants: { type: [String], default: [] },
-    messages: { type: [Message], default: [] },
+    messages: { type: [Message.Schema], default: [] },
   },
   {
     timestamps: true,
