@@ -11,4 +11,9 @@ router.route('/:id')
   .get(messagesController.getMessage)
   .patch(messagesController.editMessageText);
 
+router.route('/:id/report')
+  .patch(messagesController.reportMessage);
+
+// TODO: implement route to update report (maybe /:id/ban)
+
 export default router;

@@ -1,61 +1,49 @@
-const messagesDb = [
-  {
-    id: '1',
-    userId: '1',
-    roomId: '1',
-    text: '¡Vivan las papas aliñaitas! 🤤',
-    replyToId: false
-  },
-  {
-    id: '2',
-    userId: '2',
-    roomId: '1',
-    text: '¡Di que si! 🥳',
-    replyToId: '1'
+const { Schema, default: mongoose } = require('mongoose');
+
+const messageSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, required: true },
+  roomId: { type: Schema.Types.ObjectId, required: true },
+  text: { type: String, required: true, maxLength: 255 },
+  replyToId: { type: Schema.Types.ObjectId },
+  reportedBy: {
+    userId: { type: Schema.Types.ObjectId },
+    madeAt: { type: Date },
+    isBanned: { type: Boolean }
   }
-];
+}, { timestamps: true });
 
-const getAll = () => messagesDb;
+// TODO: Improve error handling (validations)
 
-const getById = (id) => {
-  const message = messagesDb.find(msg => msg.id === id);
+// static methods
 
-  if (!message) {
-    return null;
-  }
+messageSchema.statics.getAll = (page = 0, size = 10) => mongoose.model('Message').find({ limit: size, skip: page * size });
 
-  return message;
-};
+messageSchema.statics.getAllFromRoomId = (roomId, page = 0, limit = 10) => mongoose.model('Message').find({ roomId }, { limit, skip: limit * page });
 
-const create = (userId, roomId, text, replyToId) => {
-  const lastMessageId = parseInt(messagesDb[messagesDb.length - 1].id);
+messageSchema.statics.getById = (id) => mongoose.model('Message').findById(id);
 
-  const newMessage = {
-    id: lastMessageId + 1, userId, roomId, text, replyToId
+messageSchema.statics.insert = (userId, roomId, text, replyToId) => {
+  let newMessage = {
+    userId, roomId, text, report: {}
   };
 
-  messagesDb.push(newMessage);
+  if (replyToId) { newMessage = { ...newMessage, replyToId }; }
 
-  return newMessage;
+  return mongoose.model('Message').create(newMessage);
 };
 
-const editText = (id, newText) => {
-  const messageIndex = messagesDb.findIndex(msg => msg.id === id);
+// instance methods
 
-  if (messageIndex < 0) {
-    return null;
-  }
-
-  const message = messagesDb[messageIndex];
-  message.text = newText;
-  messagesDb[messageIndex] = message;
-
-  return message;
+messageSchema.methods.updateText = function updateText(text) {
+  this.text = text;
+  return this.save();
 };
 
-module.exports = {
-  getAll,
-  getById,
-  create,
-  editText
+messageSchema.methods.report = function report(userId) {
+  this.reportedBy = { userId, madeAt: Date.now(), isBanned: false };
+  return this.save();
 };
+
+// TODO: implement method to update report
+
+module.exports = mongoose.model('Message', messageSchema);
