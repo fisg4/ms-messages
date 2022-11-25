@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: messages
   labels:
-    {{ -include "messages.labels" . | nindent 4}}
+    {{- include "messages.labels" . | nindent 4}}
     app.kubernetes.io/component: messages
 spec:
-  replicas: {{ .Values.contacts.replicaCount }}
+  replicas: {{ .Values.messages.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: messages
@@ -32,7 +32,7 @@ spec:
               path: /
               port: 3000
           livenessProbe:
-            initalDelaySeconds: 10
+            initialDelaySeconds: 10
             periodSeconds: 1
             httpGet:
               path: /

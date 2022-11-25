@@ -4,7 +4,7 @@ build:
 
 deploy:
   - helm upgrade --install ms-messages chart
-  --set messages.image=${OKTETO_BUILD_MS_MESSAGES_IMAGE}
+    --set messages.image=${OKTETO_BUILD_CONTACTS_SERVICE_IMAGE}
 
 dev:
   ms-messages:
