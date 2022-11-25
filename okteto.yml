@@ -1,0 +1,13 @@
+build:
+  ms-messages:
+    context: .
+
+deploy:
+  - helm upgrade --install ms-messages chart
+    --set messages.image=${OKTETO_BUILD_MS_MESSAGES_IMAGE}
+
+dev:
+  ms-messages:
+    command: npm start
+    sync:
+      - .:/app
