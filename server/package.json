@@ -2,6 +2,11 @@
   "name": "chat",
   "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fisg4/ms-messages.git"
+  },
+  "homepage": "https://github.com/fisg4/ms-messages",
   "main": "dist/bin/www.js",
   "scripts": {
     "start": "nodemon",
