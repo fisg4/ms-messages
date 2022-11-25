@@ -19,6 +19,10 @@ app.use(helmet());
 app.use(cors());
 app.use(compression());
 
+app.get('/', (req, res) => {
+  res.send('Hello!');
+});
+
 app.use('/api/v1', routes.hello);
 app.use('/api/v1/messages', routes.messages);
 app.use('/api/v1/rooms', require('./routes/roomsRoutes'));
