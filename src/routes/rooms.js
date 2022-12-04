@@ -12,7 +12,7 @@ router.route('/:id')
   .get(roomsController.getRoomById)
   .delete(roomsController.deleteRoom);
 
-router.route('/:id/participants')
+router.route('/:id')
   .patch(roomsController.updateRoom);
 
-module.exports = router;
+export default router;
