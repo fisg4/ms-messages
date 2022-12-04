@@ -55,12 +55,14 @@ const updateRoom = async (req, res) => {
     res.status(304).json({ data: null });
   } else {
     try {
+      console.log(req.params.id);
+      
       const room = await Room.findByIdAndUpdate(req.params.id, req.body);
       // const updated = await Room.findById(req.params.id);
       if (!room) {
         res.status(404).json({ data: null });
       } else {
-        res.status(201).json({ data: updated });
+        res.status(201).json({data: room});
       }
     } catch (err) {
       res.status(500).json({ data: null });
