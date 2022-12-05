@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ENV = process.env.NODE_ENV || 'dev';
-const MONGODB_URI = process.env.ATLAS_URI;
+const MONGODB_URI = process.env.DB_URL;
 const MONGODB_CONFIG = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
