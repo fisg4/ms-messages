@@ -25,6 +25,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1', routes.hello);
 app.use('/api/v1/messages', routes.messages);
-app.use('/api/v1/rooms', require('./routes/roomsRoutes'));
+app.use('/api/v1/rooms', routes.rooms);
 
 module.exports = app;
