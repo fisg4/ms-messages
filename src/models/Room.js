@@ -14,4 +14,8 @@ const roomSchema = new Schema(
   }
 );
 
+roomSchema.methods.checkUserIsParticipant = function checkUserIsParticipant(userId) {
+  return this.participants.indexOf(userId) !== -1;
+};
+
 module.exports = mongoose.model('Room', roomSchema);

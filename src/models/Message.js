@@ -12,8 +12,6 @@ const messageSchema = new Schema({
   }
 }, { timestamps: true });
 
-// TODO: Improve error handling (validations)
-
 // static methods
 
 messageSchema.statics.getAll = (page = 0, size = 10) => mongoose.model('Message').find({ limit: size, skip: page * size });
@@ -44,6 +42,9 @@ messageSchema.methods.report = function report(userId) {
   return this.save();
 };
 
-// TODO: implement method to update report
+messageSchema.methods.ban = function ban() {
+  this.reportedBy.isBanned = true;
+  return this.save();
+};
 
 module.exports = mongoose.model('Message', messageSchema);
