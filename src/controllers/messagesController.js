@@ -1,8 +1,9 @@
 const { Message, Room } = require('../models');
 
+// TODO: This function must return typical pagination values (ie. total, numPages)
 const getAllMessagesFromRoom = async (req, res) => {
   // TODO: Modify this when we support authentication and move to middleware
-  const { userId } = req.header.auth;
+  const userId = req.header('userId');
   if (!userId) {
     res.status(400).json({
       success: false,
@@ -24,10 +25,18 @@ const getAllMessagesFromRoom = async (req, res) => {
 
   try {
     const room = await Room.findById(roomId);
-    if (!room || room.checkUserIsParticipant(userId)) {
+    if (!room) {
+      res.status(404).json({
+        success: false,
+        message: `Room with id '${roomId}' not found`,
+        content: []
+      });
+      return;
+    }
+    if (!room.checkUserIsParticipant(userId)) {
       res.status(403).json({
         success: false,
-        message: `Logged user is not a participant of the room with id ${roomId}`,
+        message: `Logged user is not a participant of the room with id '${roomId}'`,
         content: []
       });
       return;
@@ -53,7 +62,6 @@ const getMessage = async (req, res) => {
 
   try {
     const message = await Message.getById(id);
-
     if (!message) {
       res.status(404).json({
         success: false,
@@ -79,7 +87,7 @@ const getMessage = async (req, res) => {
 
 const createNewMessage = async (req, res) => {
   // TODO: Modify this when we support authentication and move to middleware
-  const { userId } = req.header.auth;
+  const userId = req.header('userId');
   if (!userId) {
     res.status(400).json({
       success: false,
@@ -95,7 +103,15 @@ const createNewMessage = async (req, res) => {
 
   try {
     const room = await Room.findById(roomId);
-    if (!room || room.checkUserIsParticipant(userId)) {
+    if (!room) {
+      res.status(404).json({
+        success: false,
+        message: `Room with id '${roomId}' not found`,
+        content: []
+      });
+      return;
+    }
+    if (!room.checkUserIsParticipant(userId)) {
       res.status(403).json({
         success: false,
         message: `Logged user is not a participant of the room with id '${roomId}'`,
@@ -103,6 +119,7 @@ const createNewMessage = async (req, res) => {
       });
       return;
     }
+
     const newMessage = await Message.insert(userId, roomId, text, replyToId);
     res.status(201).json({
       success: true,
@@ -128,7 +145,7 @@ const createNewMessage = async (req, res) => {
 
 const editMessageText = async (req, res) => {
   // TODO: Modify this when we support authentication and move to middleware
-  const { userId } = req.header.auth;
+  const userId = req.header('userId');
   if (!userId) {
     res.status(400).json({
       success: false,
@@ -189,7 +206,7 @@ const reportMessage = async (req, res) => {
   const { id } = req.params;
 
   // TODO: Modify this when we support authentication and move to middleware
-  const { userId } = req.header.auth;
+  const userId = req.header('userId');
   if (!userId) {
     res.status(400).json({
       success: false,

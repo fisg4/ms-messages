@@ -16,7 +16,7 @@ const messageSchema = new Schema({
 
 messageSchema.statics.getAll = (page = 0, size = 10) => mongoose.model('Message').find({ limit: size, skip: page * size });
 
-messageSchema.statics.getAllFromRoomId = (roomId, page = 0, limit = 10) => mongoose.model('Message').find({ roomId }, { limit, skip: limit * page });
+messageSchema.statics.getAllFromRoomId = (roomId, page = 0, limit = 10) => mongoose.model('Message').find({ roomId }).skip(limit * page).limit(limit);
 
 messageSchema.statics.getById = (id) => mongoose.model('Message').findById(id);
 

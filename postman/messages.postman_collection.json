@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "5fb04f4d-3e6d-4c4a-9726-ec1f2dd29c50",
+		"name": "messages",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24780295"
+	},
+	"item": [
+		{
+			"name": "getAllMessagesFromRoom",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages?roomId=638ce6c15ee33401fd11f238",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages"
+					],
+					"query": [
+						{
+							"key": "roomId",
+							"value": "638ce6c15ee33401fd11f238"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getMessage",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6390c0e32b1a3b95309a7a89"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createNewMessage",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\": \"562b2649b2e70464f113c04d\",\n\t\"roomId\": \"562b2649b2e70464f113c16d\",\n\t\"text\": \"Me alegro mucho de que a ti también te gusten\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editMessageText",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"text\": \"¡Vivan las papas aliñaitas y la ensaladilla! 🤤\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reportMessage",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userId\": \"637d127e156c8cf21ae8bd05\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/report",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages",
+						":id",
+						"report"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
