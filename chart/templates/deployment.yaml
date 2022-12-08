@@ -27,6 +27,11 @@ spec:
                 secretKeyRef:
                   name: mongodb
                   key: messages_db_url
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: nodeenv
+                  key: messages_node_env
           ports:
             - name: http
               containerPort: 3000
