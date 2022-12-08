@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const mongoose = require('mongoose');
 
 const ENV = process.env.NODE_ENV || 'dev';

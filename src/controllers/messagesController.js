@@ -1,6 +1,5 @@
 const { Message, Room } = require('../models');
 
-// TODO: This function must return typical pagination values (ie. total, numPages)
 const getAllMessagesFromRoom = async (req, res) => {
   // TODO: Modify this when we support authentication and move to middleware
   const userId = req.header('userId');
@@ -42,11 +41,11 @@ const getAllMessagesFromRoom = async (req, res) => {
       return;
     }
 
-    const messages = await Message.getAllFromRoomId(roomId, page, size);
+    const messagesPaginated = await Message.getAllFromRoomId(roomId, page, size);
     res.status(200).json({
       success: true,
       message: 'OK',
-      content: messages
+      ...messagesPaginated
     });
   } catch (err) {
     res.status(500).json({
@@ -169,7 +168,7 @@ const editMessageText = async (req, res) => {
       return;
     }
 
-    if (message.userId !== userId) {
+    if (message.userId.toString() !== userId) {
       res.status(403).json({
         success: false,
         message: `Logged user is not the author of the message with id '${id}'`,
@@ -179,7 +178,6 @@ const editMessageText = async (req, res) => {
     }
 
     const updatedTextMessage = await message.updateText(text);
-
     res.status(201).json({
       success: true,
       message: 'OK',
@@ -227,7 +225,7 @@ const reportMessage = async (req, res) => {
       return;
     }
     // TODO: check if this can be moved to model file
-    if (message.reportedBy) {
+    if (message.reportedBy.userId) {
       res.status(400).json({
         success: false,
         message: `The message with id '${id}' has already been reported`,
@@ -236,8 +234,17 @@ const reportMessage = async (req, res) => {
       return;
     }
 
-    const reportedMessage = await message.report(userId);
+    const room = await Room.findById(message.roomId);
+    if (!room || !room.checkUserIsParticipant(userId)) {
+      res.status(403).json({
+        success: false,
+        message: `The user '${userId}' is not a participant of the room`,
+        content: {}
+      });
+    }
 
+    // TODO: Make a call to support ms
+    const reportedMessage = await message.report(userId);
     res.status(201).json({
       success: true,
       message: 'OK',
@@ -269,6 +276,23 @@ const banMessage = async (req, res) => {
       res.status(404).json({
         success: false,
         message: `Message with id '${id}' not found`,
+        content: {}
+      });
+      return;
+    }
+
+    if (!message.reportedBy.userId) {
+      res.status(400).json({
+        success: false,
+        message: `The message with id '${id}' can not be banned: it has not been reported`,
+        content: {}
+      });
+      return;
+    }
+    if (message.reportedBy.isBanned) {
+      res.status(400).json({
+        success: false,
+        message: `The message with id '${id}' has already been banned`,
         content: {}
       });
       return;
