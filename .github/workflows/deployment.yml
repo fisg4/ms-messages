@@ -19,5 +19,5 @@ jobs:
     - name: Okteto deploy
       uses: resinas/okteto-push@v1.0.2
       with:
-        namespace: fisg4-music-jorandmol
+        namespace: fastmusik-marmolpen3
         build: true

@@ -6,6 +6,7 @@ deploy:
   - helm upgrade --install ms-messages chart
     --set messages.image=${OKTETO_BUILD_MS_MESSAGES_IMAGE}
     --set messagesMongoUrl=$MESSAGES_DB_URL
+    --set messagesNodeEnv=$MESSAGES_NODE_ENV
 
 dev:
   ms-messages:

@@ -2,3 +2,4 @@ messages:
   replicaCount: 1
 
 messagesMongoUrl: mongodb://mongo/test
+messagesNodeEnv: prod
