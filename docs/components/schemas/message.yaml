@@ -1,0 +1,28 @@
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: 637d0c328a43d958f6ff661f
+        roomId:
+          type: string
+          example: 638ce6c15ee33401fd11f238
+        text:
+          type: string
+          example: Test text
+        replyToId:
+          type: string
+          example: 63923d2f001472d3363a1892
+        reportedBy:
+          $ref: '#/components/schemas/Report'
+        createdAt:
+          type: string
+          format: date
+        updatedAt:
+          type: string
+          format: date
+        id:
+          type: string
+          example: 6393291baae5a26cbf501bab
