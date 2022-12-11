@@ -9,11 +9,11 @@
   "homepage": "https://github.com/fisg4/ms-messages",
   "main": "dist/bin/www.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "cross-env npm-run-all build server",
+    "develop": "nodemon",
     "build": "npm-run-all clean transpile",
     "server": "node ./dist/bin/www",
     "dev": "cross-env NODE_ENV=dev npm-run-all build server",
-    "prod": "cross-env NODE_ENV=prod npm-run-all build server",
     "clean": "rimraf dist",
     "transpile": "babel ./src --out-dir dist --copy-files",
     "lint": "eslint ./src",

@@ -1,0 +1,149 @@
+{
+	"info": {
+		"_postman_id": "e24dd06f-b7a2-4bd0-afe5-6006daf31b5d",
+		"name": "rooms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24780295"
+	},
+	"item": [
+		{
+			"name": "getAllRooms",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRoom",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "638ce6c15ee33401fd11f238"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteRoom",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "638ce7d350c1f8f9a9fbe8fc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "modifyRoomParticipants",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "",
+						"value": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"participants\": [\n        \"637d0c328a43d958f6ff661f\",\n        \"637d0c328a43d958f6ff661d\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "638ce6c15ee33401fd11f238"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createRoom",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"To delete\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

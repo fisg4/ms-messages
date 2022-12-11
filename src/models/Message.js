@@ -12,13 +12,26 @@ const messageSchema = new Schema({
   }
 }, { timestamps: true });
 
-// TODO: Improve error handling (validations)
-
 // static methods
 
 messageSchema.statics.getAll = (page = 0, size = 10) => mongoose.model('Message').find({ limit: size, skip: page * size });
 
-messageSchema.statics.getAllFromRoomId = (roomId, page = 0, limit = 10) => mongoose.model('Message').find({ roomId }, { limit, skip: limit * page });
+messageSchema.statics.getAllFromRoomId = async (roomId, page = 0, limit = 10) => {
+  const count = await mongoose.model('Message').find({ roomId }).count();
+  if (count === 0) {
+    return {
+      content: [], totalElements: 0, totalPages: 0, currentPage: 0
+    };
+  }
+
+  const messages = await mongoose.model('Message').find({ roomId }).skip(limit * page).limit(limit);
+  return {
+    content: messages,
+    totalElements: count,
+    totalPages: Math.ceil(count / limit),
+    currentPage: page
+  };
+};
 
 messageSchema.statics.getById = (id) => mongoose.model('Message').findById(id);
 
@@ -44,6 +57,9 @@ messageSchema.methods.report = function report(userId) {
   return this.save();
 };
 
-// TODO: implement method to update report
+messageSchema.methods.ban = function ban() {
+  this.reportedBy.isBanned = true;
+  return this.save();
+};
 
 module.exports = mongoose.model('Message', messageSchema);

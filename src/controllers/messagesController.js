@@ -1,17 +1,51 @@
-const { Message } = require('../models');
+const { Message, Room } = require('../models');
 
-// TODO: Append message and status to responses
+const getAllMessagesFromRoom = async (req, res) => {
+  // TODO: Modify this when we support authentication and move to middleware
+  const userId = req.header('userId');
+  if (!userId) {
+    res.status(400).json({
+      success: false,
+      message: 'User is not authenticated',
+      content: []
+    });
+    return;
+  }
 
-// possibily this could be removed
-const getAllMessages = async (req, res) => {
-  const { page = 0, size = 10 } = req.query;
+  const { roomId, page = 0, size = 10 } = req.query;
+  if (!roomId) {
+    res.status(400).json({
+      success: false,
+      message: 'Selecting a room is mandatory',
+      content: []
+    });
+    return;
+  }
 
   try {
-    const messages = await Message.getAll(page, size);
+    const room = await Room.findById(roomId);
+    if (!room) {
+      res.status(404).json({
+        success: false,
+        message: `Room with id '${roomId}' not found`,
+        content: []
+      });
+      return;
+    }
+    if (!room.checkUserIsParticipant(userId)) {
+      res.status(403).json({
+        success: false,
+        message: `Logged user is not a participant of the room with id '${roomId}'`,
+        content: []
+      });
+      return;
+    }
+
+    const messagesPaginated = await Message.getAllFromRoomId(roomId, page, size);
     res.status(200).json({
       success: true,
       message: 'OK',
-      content: messages
+      ...messagesPaginated
     });
   } catch (err) {
     res.status(500).json({
@@ -27,7 +61,6 @@ const getMessage = async (req, res) => {
 
   try {
     const message = await Message.getById(id);
-
     if (!message) {
       res.status(404).json({
         success: false,
@@ -52,11 +85,40 @@ const getMessage = async (req, res) => {
 };
 
 const createNewMessage = async (req, res) => {
+  // TODO: Modify this when we support authentication and move to middleware
+  const userId = req.header('userId');
+  if (!userId) {
+    res.status(400).json({
+      success: false,
+      message: 'User is not authenticated',
+      content: []
+    });
+    return;
+  }
+
   const {
-    userId, roomId, text, replyToId = null
+    roomId, text, replyToId = null
   } = req.body;
 
   try {
+    const room = await Room.findById(roomId);
+    if (!room) {
+      res.status(404).json({
+        success: false,
+        message: `Room with id '${roomId}' not found`,
+        content: []
+      });
+      return;
+    }
+    if (!room.checkUserIsParticipant(userId)) {
+      res.status(403).json({
+        success: false,
+        message: `Logged user is not a participant of the room with id '${roomId}'`,
+        content: []
+      });
+      return;
+    }
+
     const newMessage = await Message.insert(userId, roomId, text, replyToId);
     res.status(201).json({
       success: true,
@@ -81,6 +143,17 @@ const createNewMessage = async (req, res) => {
 };
 
 const editMessageText = async (req, res) => {
+  // TODO: Modify this when we support authentication and move to middleware
+  const userId = req.header('userId');
+  if (!userId) {
+    res.status(400).json({
+      success: false,
+      message: 'User is not authenticated',
+      content: []
+    });
+    return;
+  }
+
   const { id } = req.params;
   const { text } = req.body;
 
@@ -95,8 +168,16 @@ const editMessageText = async (req, res) => {
       return;
     }
 
-    const updatedTextMessage = await message.updateText(text);
+    if (message.userId.toString() !== userId) {
+      res.status(403).json({
+        success: false,
+        message: `Logged user is not the author of the message with id '${id}'`,
+        content: {}
+      });
+      return;
+    }
 
+    const updatedTextMessage = await message.updateText(text);
     res.status(201).json({
       success: true,
       message: 'OK',
@@ -113,7 +194,7 @@ const editMessageText = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: `Error updating the text of message with id '${id}' and text '${text}'`,
+      message: `Error updating the message with id '${id}' and the new text '${text}'`,
       content: {}
     });
   }
@@ -121,13 +202,14 @@ const editMessageText = async (req, res) => {
 
 const reportMessage = async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.body;
 
+  // TODO: Modify this when we support authentication and move to middleware
+  const userId = req.header('userId');
   if (!userId) {
     res.status(400).json({
       success: false,
-      message: 'It is necessary to set an userId',
-      content: {}
+      message: 'User is not authenticated',
+      content: []
     });
     return;
   }
@@ -143,7 +225,7 @@ const reportMessage = async (req, res) => {
       return;
     }
     // TODO: check if this can be moved to model file
-    if (message.reportedBy) {
+    if (message.reportedBy.userId) {
       res.status(400).json({
         success: false,
         message: `The message with id '${id}' has already been reported`,
@@ -152,8 +234,17 @@ const reportMessage = async (req, res) => {
       return;
     }
 
-    const reportedMessage = await message.report(userId);
+    const room = await Room.findById(message.roomId);
+    if (!room || !room.checkUserIsParticipant(userId)) {
+      res.status(403).json({
+        success: false,
+        message: `The user '${userId}' is not a participant of the room`,
+        content: {}
+      });
+    }
 
+    // TODO: Make a call to support ms
+    const reportedMessage = await message.report(userId);
     res.status(201).json({
       success: true,
       message: 'OK',
@@ -176,12 +267,66 @@ const reportMessage = async (req, res) => {
   }
 };
 
-// TODO: implement function to update report
+const banMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const message = await Message.getById(id);
+    if (!message) {
+      res.status(404).json({
+        success: false,
+        message: `Message with id '${id}' not found`,
+        content: {}
+      });
+      return;
+    }
+
+    if (!message.reportedBy.userId) {
+      res.status(400).json({
+        success: false,
+        message: `The message with id '${id}' can not be banned: it has not been reported`,
+        content: {}
+      });
+      return;
+    }
+    if (message.reportedBy.isBanned) {
+      res.status(400).json({
+        success: false,
+        message: `The message with id '${id}' has already been banned`,
+        content: {}
+      });
+      return;
+    }
+
+    const bannedMessage = await message.ban();
+
+    res.status(201).json({
+      success: true,
+      message: 'OK',
+      content: bannedMessage
+    });
+  } catch (err) {
+    if (err.errors) {
+      res.status(400).json({
+        success: false,
+        message: err.message,
+        content: {}
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: `Error when banning the message with id '${id}'`,
+      content: {}
+    });
+  }
+};
 
 module.exports = {
-  getAllMessages,
+  getAllMessagesFromRoom,
   getMessage,
   createNewMessage,
   editMessageText,
-  reportMessage
+  reportMessage,
+  banMessage
 };
