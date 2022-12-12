@@ -6,6 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const logger = require('morgan');
 const routes = require('./routes');
+const swagger = require('../swagger');
 
 require('./db');
 
@@ -26,5 +27,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1', routes.hello);
 app.use('/api/v1/messages', routes.messages);
 app.use('/api/v1/rooms', routes.rooms);
+
+swagger(app);
 
 module.exports = app;
