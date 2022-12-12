@@ -1,0 +1,14 @@
+components:
+  schemas:
+    Report:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: 637d0c328a43d958f6ff661f
+        madeAt:
+          type: string
+          format: date
+        isBanned:
+          type: boolean
+          example: false

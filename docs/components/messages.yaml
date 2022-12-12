@@ -1,0 +1,164 @@
+paths:
+  /messages:
+    get:
+      tags:
+        - Messages
+      summary: Get the messages of a room
+      description: Returns a paginated list of messages from the desired room.
+      parameters:
+        - name: roomId
+          in: query
+          description: ID of a existing room
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page to retrieve (starts from 0)
+          required: false
+          schema:
+            type: number
+        - name: size
+          in: query
+          description: The number of messages per page
+          required: false
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of the messages of a room
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaginatedMessages"
+        "400":
+          description: "Selecting a room is mandatory"
+        "403":
+          description: "User is not a participant of the room"
+        "404":
+          description: "Room not found"
+    post:
+      tags:
+        - Messages
+      summary: Post a new message to a room
+      description: Creates a new message which belongs to the specified room
+      requestBody:
+        description: Message required properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomId:
+                  type: string
+                  example: 638ce6c15ee33401fd11f238
+                text:
+                  type: string
+                  example: Test text
+      responses:
+        "201":
+          description: Successful operation. Message created
+        "400":
+          description: Validation errors
+        "403":
+          description: "User is not a participant of the room"
+        "404":
+          description: "Room not found"
+  /messages/:id:
+    get:
+      tags:
+        - Messages
+      summary: Get a message by ID
+      description: Returns a existing message by its ID
+      parameters:
+        - name: id
+          in: path
+          description: Message ID in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+    patch:
+      tags:
+        - Messages
+      summary: Edit the message text
+      description: Modify the text of the message
+      requestBody:
+        description: Message required properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: New test text
+      responses:
+        "201":
+          description: Successful operation. Message updated
+        "400":
+          description: Validation errors
+        "403":
+          description: "User is not the author of the message"
+        "404":
+          description: "Message not found"
+  /messages/:id/report:
+    patch:
+      tags:
+        - Messages
+      summary: Report the message
+      description: Report a message and notify support team
+      requestBody:
+        description: The author of the report
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 637d127e156c8cf21ae8bd05
+      responses:
+        "201":
+          description: Successful operation. Message reported
+        "400":
+          description: Message already reported
+        "403":
+          description: "User is not a participant of the message's room"
+        "404":
+          description: "Message not found"
+  /messages/:id/ban:
+    patch:
+      tags:
+        - Messages
+      summary: Report the message
+      description: Report a message and notify support team
+      requestBody:
+        description: The author of the report
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  example: 637d127e156c8cf21ae8bd05
+      responses:
+        "201":
+          description: Successful operation. Message reported
+        "400":
+          description: Validation errors
+        "404":
+          description: "Message not found"
+components:
+  $ref:
+    - "./components/schemas/paginatedMessages.yaml"
+    - "./components/schemas/message.yaml"

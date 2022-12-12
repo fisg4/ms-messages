@@ -1,0 +1,24 @@
+components:
+  schemas:
+    PaginatedMessages:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: OK
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        totalElements:
+          type: number
+          example: 10
+        totalPages:
+          type: number
+          example: 1
+        currentPage:
+          type: number
+          example: 0
