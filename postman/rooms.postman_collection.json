@@ -7,12 +7,18 @@
 	},
 	"item": [
 		{
-			"name": "getAllRooms",
+			"name": "getAllUserRooms",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms",
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms?page=0&size=10",
 					"host": [
 						"{{host}}{{port}}"
 					],
@@ -20,6 +26,16 @@
 						"api",
 						"{{apiVersion}}",
 						"rooms"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
 					]
 				}
 			},
@@ -44,7 +60,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "638ce6c15ee33401fd11f238"
+							"value": "63977a54e6eb1fbc31dae061"
 						}
 					]
 				}
@@ -55,7 +71,13 @@
 			"name": "deleteRoom",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id",
 					"host": [
@@ -70,7 +92,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "638ce7d350c1f8f9a9fbe8fc"
+							"value": "63977b925139b0b489ce6f3f"
 						}
 					]
 				}
@@ -78,17 +100,17 @@
 			"response": []
 		},
 		{
-			"name": "modifyRoomParticipants",
+			"name": "addParticipantsToRoom",
 			"request": {
-				"method": "PATCH",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json"
 					},
 					{
-						"key": "",
-						"value": ""
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f"
 					}
 				],
 				"body": {
@@ -96,7 +118,7 @@
 					"raw": "{\n\t\"participants\": [\n        \"637d0c328a43d958f6ff661f\",\n        \"637d0c328a43d958f6ff661d\"\n    ]\n}"
 				},
 				"url": {
-					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id",
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id/participants",
 					"host": [
 						"{{host}}{{port}}"
 					],
@@ -104,12 +126,58 @@
 						"api",
 						"{{apiVersion}}",
 						"rooms",
-						":id"
+						":id",
+						"participants"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "638ce6c15ee33401fd11f238"
+							"value": "63977a54e6eb1fbc31dae061"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "removeParticipantFromRoom",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id/participants/:participantId",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id",
+						"participants",
+						":participantId"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "63977a54e6eb1fbc31dae061"
+						},
+						{
+							"key": "participantId",
+							"value": "637d0c328a43d958f6ff661d"
 						}
 					]
 				}
@@ -124,11 +192,16 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json"
+					},
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"To delete\"\n}"
+					"raw": "{\n\t\"name\": \"Test1\",\n    \"description\": \"Test description\",\n    \"songId\": \"637d0c328a43d958f6ff661d\",\n    \"participants\": [\n        {\n            \"userId\": \"637d0c328a43d958f6ff661f\",\n            \"role\": 1\n        },\n        {\n            \"userId\": \"637d0c328a43d958f6ff661b\"\n        }\n    ]\n\n}"
 				},
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/",
@@ -140,6 +213,132 @@
 						"{{apiVersion}}",
 						"rooms",
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllMessagesFromRoom",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661f",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id/messages?page=0&size=10",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id",
+						"messages"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "63977a54e6eb1fbc31dae061"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createNewMessage",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661b",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"text\": \"¡Toma!\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id/messages",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id",
+						"messages"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "63977a54e6eb1fbc31dae061"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editRoomInfo",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "userId",
+						"value": "637d0c328a43d958f6ff661b",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"New name\",\n    \"description\": \"New description\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/:id/info",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"rooms",
+						":id",
+						"info"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "63977a95e6eb1fbc31dae065"
+						}
 					]
 				}
 			},

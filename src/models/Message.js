@@ -24,7 +24,12 @@ messageSchema.statics.getAllFromRoomId = async (roomId, page = 0, limit = 10) =>
     };
   }
 
-  const messages = await mongoose.model('Message').find({ roomId }).skip(limit * page).limit(limit);
+  const messages = await mongoose.model('Message')
+    .find({ roomId })
+    .sort({ createdAt: 1 })
+    .skip(limit * page)
+    .limit(limit);
+
   return {
     content: messages,
     totalElements: count,
