@@ -7,47 +7,10 @@
 	},
 	"item": [
 		{
-			"name": "getAllMessagesFromRoom",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "userId",
-						"value": "637d0c328a43d958f6ff661f",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages?roomId=638ce6c15ee33401fd11f238",
-					"host": [
-						"{{host}}{{port}}"
-					],
-					"path": [
-						"api",
-						"{{apiVersion}}",
-						"messages"
-					],
-					"query": [
-						{
-							"key": "roomId",
-							"value": "638ce6c15ee33401fd11f238"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "getMessage",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "userId",
-						"value": "637d0c328a43d958f6ff661f",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id",
 					"host": [
@@ -62,41 +25,8 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "63923d2f001472d3363a1892"
+							"value": "63977f874767e2e75cc8379b"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "createNewMessage",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "userId",
-						"value": "637d0c328a43d958f6ff661f",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"roomId\": \"638ce6c15ee33401fd11f238\",\n\t\"text\": \"Me alegro mucho de que a ti también te gusten\"\n}"
-				},
-				"url": {
-					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages",
-					"host": [
-						"{{host}}{{port}}"
-					],
-					"path": [
-						"api",
-						"{{apiVersion}}",
-						"messages"
 					]
 				}
 			},
@@ -119,7 +49,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"text\": \"¡Vivan las papas aliñaitas y la ensaladilla! 🤤\"\n}"
+					"raw": "{\n\t\"text\": \"¡Ole que ole, ole, ole!\"\n}"
 				},
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id",
@@ -135,7 +65,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "63923d2f001472d3363a1892"
+							"value": "63977f874767e2e75cc8379b"
 						}
 					]
 				}
@@ -159,7 +89,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"userId\": \"637d127e156c8cf21ae8bd05\"\n}"
+					"raw": ""
 				},
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/report",
@@ -176,7 +106,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "639241403f4d0d5e5124b5b5"
+							"value": "6397819481f989ded88dc692"
 						}
 					]
 				}
@@ -191,19 +121,14 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json"
-					},
-					{
-						"key": "userId",
-						"value": "637d0c328a43d958f6ff661f",
-						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"userId\": \"637d127e156c8cf21ae8bd05\"\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/report",
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/ban",
 					"host": [
 						"{{host}}{{port}}"
 					],
@@ -212,12 +137,12 @@
 						"{{apiVersion}}",
 						"messages",
 						":id",
-						"report"
+						"ban"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "639241403f4d0d5e5124b5b5"
+							"value": "6397819481f989ded88dc692"
 						}
 					]
 				}
