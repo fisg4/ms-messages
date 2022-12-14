@@ -1,4 +1,4 @@
-const Room = require('../models/Room');
+const { Room, Role } = require('../models/Room');
 const Message = require('../models/Message');
 
 const getAllUserRooms = async (req, res) => {
@@ -123,6 +123,9 @@ const createRoom = async (req, res) => {
   const {
     name, description, songId, participants
   } = req.body;
+
+  const finalParticipants = [{ userId, role: Role.ADMIN }];
+  participants.forEach(participantId => finalParticipants.push({ userId: participantId }));
 
   // TODO: call songs service and get info data for name and description
 

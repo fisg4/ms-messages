@@ -16,7 +16,17 @@ components:
           type: string
           example: 63923d2f001472d3363a1892
         reportedBy:
-          $ref: '#/components/schemas/Report'
+          type: object
+          properties:
+            userId:
+              type: string
+              example: 637d0c328a43d958f6ff661f
+            madeAt:
+              type: string
+              format: date
+            isBanned:
+              type: boolean
+              example: false
         createdAt:
           type: string
           format: date

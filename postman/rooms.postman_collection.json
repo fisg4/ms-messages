@@ -201,7 +201,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Test1\",\n    \"description\": \"Test description\",\n    \"songId\": \"637d0c328a43d958f6ff661d\",\n    \"participants\": [\n        {\n            \"userId\": \"637d0c328a43d958f6ff661f\",\n            \"role\": 1\n        },\n        {\n            \"userId\": \"637d0c328a43d958f6ff661b\"\n        }\n    ]\n\n}"
+					"raw": "{\n\t\"name\": \"Test1\",\n    \"description\": \"Test description\",\n    \"songId\": \"637d0c328a43d958f6ff661d\",\n    \"participants\": [\n        \"637d0c328a43d958f6ff661b\"\n    ]\n\n}"
 				},
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/rooms/",
@@ -262,7 +262,7 @@
 			"response": []
 		},
 		{
-			"name": "createNewMessage",
+			"name": "postMessageInRoom",
 			"request": {
 				"method": "POST",
 				"header": [
