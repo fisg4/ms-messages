@@ -1,0 +1,313 @@
+paths:
+  /rooms:
+    get:
+      tags:
+        - Rooms
+      summary: Get all rooms
+      description: Get all rooms in where the user is a participant
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page to retrieve (starts from 0)
+          required: false
+          schema:
+            type: number
+        - name: size
+          in: query
+          description: The number of messages per page
+          required: false
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of the rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaginatedRooms"
+        "400":
+          description: "User is not authenticated"
+    post:
+      tags:
+        - Rooms
+      summary: Create a new room
+      description: Creates a new room
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Room required properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                songId:
+                  type: string
+                participants:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "201":
+          description: Successful operation. Room created
+        "400":
+          description: Validation errors
+  /rooms/:id:
+    get:
+      tags:
+        - Rooms
+      summary: Get a room by ID
+      description: Returns an existing room by its ID
+      parameters:
+        - name: id
+          in: path
+          description: Room ID in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+        "404":
+          description: "Room not found"
+    delete:
+      tags:
+        - Rooms
+      summary: Delete a room
+      description: Delete a room
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Room ID in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Room deleted successfully
+        "403":
+          description: "User is not the admin of the room"
+        "404":
+          description: "Room not found"
+  /rooms/:id/participants:
+    post:
+      tags:
+        - Rooms
+      summary: Add participants to a room
+      description: Add a group of participants to a room
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: List of participants ids
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                participants:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful operation. Participants added
+        "400":
+          description: Validation errors
+        "403":
+          description: "User is not the admin of the room"
+        "404":
+          description: "Room not found"
+  /rooms/:id/participants/:participantId:
+    delete:
+      tags:
+        - Rooms
+      summary: Remove participant
+      description: Remove participant from a room
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Room ID in the system
+          required: true
+          schema:
+            type: string
+        - name: participantId
+          in: path
+          description: participant ID in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Participant removed successfully
+        "400":
+          description: Validation errors
+        "403":
+          description: "User is not the admin of the room"
+        "404":
+          description: "Room not found"
+  /rooms/:id/info:
+    patch:
+      tags:
+        - Rooms
+      summary: Modify room info
+      description: Modify the general info about a room
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of a existing room
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Room required properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Successful operation. Room created
+        "400":
+          description: Validation errors
+        "403":
+          description: "User is not the admin of the room"
+        "404":
+          description: "Room not found"
+  /rooms/:id/messages:
+    get:
+      tags:
+        - Rooms
+      summary: Get the messages of a room
+      description: Returns a paginated list of messages from the desired room.
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of a existing room
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: The page to retrieve (starts from 0)
+          required: false
+          schema:
+            type: number
+        - name: size
+          in: query
+          description: The number of messages per page
+          required: false
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of the messages of a room
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaginatedMessages"
+        "400":
+          description: "User is not authenticated"
+        "403":
+          description: "User is not a participant of the room"
+        "404":
+          description: "Room not found"
+    post:
+      tags:
+        - Rooms
+      summary: Post a new message to a room
+      description: Creates a new message which belongs to the specified room
+      parameters:
+        - name: userId
+          in: header
+          description: The use who makes the call
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: ID of a existing room
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Message required properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: Test text
+      responses:
+        "201":
+          description: Successful operation. Message created
+        "400":
+          description: Validation errors
+        "403":
+          description: "User is not a participant of the room"
+        "404":
+          description: "Room not found"
+components:
+  $ref:
+    - "./components/schemas/paginatedRooms.yaml"
+    - "./components/schemas/paginatedMessages.yaml"
+    - "./components/schemas/message.yaml"
+    - "./components/schemas/room.yaml"

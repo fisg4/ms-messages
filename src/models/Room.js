@@ -86,4 +86,7 @@ roomSchema.methods.deleteParticipant = function deleteParticipant(participantId)
   return this.save();
 };
 
-module.exports = mongoose.model('Room', roomSchema);
+module.exports = {
+  Room: mongoose.model('Room', roomSchema),
+  Role
+};
