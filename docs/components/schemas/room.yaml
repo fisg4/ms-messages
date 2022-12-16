@@ -5,13 +5,10 @@ components:
       properties:
         name:
           type: string
-          example: test name
         description:
           type: string
-          example: test description
         songId:
           type: string
-          example: 63923d2f001472d3363a1891
         participants:
           type: array
           items:
@@ -19,7 +16,6 @@ components:
             properties:
               userId:
                 type: string
-                example: 6393291baae5a26cbf501bab
               role:
                 type: number
                 enum: [1, 2]
@@ -31,4 +27,3 @@ components:
           format: date
         id:
           type: string
-          example: 6393291baae5a26cbf501bab

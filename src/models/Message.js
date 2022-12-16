@@ -7,6 +7,7 @@ const messageSchema = new Schema({
   replyToId: { type: Schema.Types.ObjectId },
   reportedBy: {
     userId: { type: Schema.Types.ObjectId },
+    reason: { type: String },
     madeAt: { type: Date },
     isBanned: { type: Boolean }
   }
@@ -57,13 +58,18 @@ messageSchema.methods.updateText = function updateText(text) {
   return this.save();
 };
 
-messageSchema.methods.report = function report(userId) {
-  this.reportedBy = { userId, madeAt: Date.now(), isBanned: false };
+messageSchema.methods.report = function report(userId, reason) {
+  this.reportedBy = { userId, madeAt: Date.now(), reason };
   return this.save();
 };
 
-messageSchema.methods.ban = function ban() {
-  this.reportedBy.isBanned = true;
+messageSchema.methods.removeReport = function removeReport() {
+  this.reportedBy = null;
+  return this.save();
+};
+
+messageSchema.methods.updateReport = function ban(isBanned) {
+  this.reportedBy = { ...this.reportedBy, isBanned };
   return this.save();
 };
 

@@ -27,7 +27,7 @@ paths:
       parameters:
         - name: userId
           in: header
-          description: The use who makes the call
+          description: The user who makes the call
           required: true
           schema:
             type: string
@@ -46,7 +46,6 @@ paths:
               properties:
                 text:
                   type: string
-                  example: New test text
       responses:
         "201":
           description: Successful operation. Message updated
@@ -57,7 +56,7 @@ paths:
         "404":
           description: "Message not found"
   /messages/:id/report:
-    patch:
+    post:
       tags:
         - Messages
       summary: Report the message
@@ -65,7 +64,7 @@ paths:
       parameters:
         - name: userId
           in: header
-          description: The use who makes the call
+          description: The user who makes the call
           required: true
           schema:
             type: string
@@ -75,6 +74,15 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        description: Declare the reason for the report
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
       responses:
         "201":
           description: Successful operation. Message reported
@@ -84,12 +92,11 @@ paths:
           description: "User is not a participant of the message's room"
         "404":
           description: "Message not found"
-  /messages/:id/ban:
     patch:
       tags:
         - Messages
-      summary: Ban the message
-      description: Ban the message after it has been reported
+      summary: Update the status of the message's report 
+      description: Ban or decide not to ban a message after it has been reported
       parameters:
         - name: id
           in: path
@@ -97,13 +104,22 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        description: Declare the reason for the report
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isBanned:
+                  type: boolean
       responses:
         "201":
           description: Successful operation. Message reported
         "400":
           description: Validation errors
         "404":
-          description: "Message not found"
+          description: Message not found
 components:
   $ref:
     - "./components/schemas/paginatedMessages.yaml"

@@ -8,9 +8,7 @@ router.route('/:id')
   .patch(messagesController.editMessageText);
 
 router.route('/:id/report')
-  .patch(messagesController.reportMessage);
-
-router.route('/:id/ban')
-  .patch(messagesController.banMessage);
+  .post(messagesController.reportMessage)
+  .patch(messagesController.updateReport);
 
 export default router;

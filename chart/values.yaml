@@ -3,3 +3,7 @@ messages:
 
 messagesMongoUrl: mongodb://mongo/test
 messagesNodeEnv: prod
+
+songsHost: http://localhost:3001
+supportHost: http://localhost:3002
+usersHost: http://localhost:3003
