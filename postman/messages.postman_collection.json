@@ -75,7 +75,7 @@
 		{
 			"name": "reportMessage",
 			"request": {
-				"method": "PATCH",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -89,7 +89,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n    \"reason\": \"Porque SIUUUUUUUUU\"\n}"
 				},
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/report",
@@ -106,7 +106,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "6397819481f989ded88dc692"
+							"value": "63977f874767e2e75cc8379b"
 						}
 					]
 				}
@@ -114,7 +114,7 @@
 			"response": []
 		},
 		{
-			"name": "banMessage",
+			"name": "updateMessageReport",
 			"request": {
 				"method": "PATCH",
 				"header": [
@@ -125,10 +125,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n    \"isBanned\": true\n}"
 				},
 				"url": {
-					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/ban",
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/report",
 					"host": [
 						"{{host}}{{port}}"
 					],
@@ -137,12 +137,12 @@
 						"{{apiVersion}}",
 						"messages",
 						":id",
-						"ban"
+						"report"
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "6397819481f989ded88dc692"
+							"value": "63977f874767e2e75cc8379b"
 						}
 					]
 				}

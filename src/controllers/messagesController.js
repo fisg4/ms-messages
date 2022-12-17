@@ -1,4 +1,6 @@
-const { Message, Room } = require('../models');
+const Message = require('../models/Message');
+const { Room } = require('../models/Room');
+const { sendReport } = require('../services/supportService');
 
 const getMessage = async (req, res) => {
   const { id } = req.params;
@@ -100,6 +102,15 @@ const reportMessage = async (req, res) => {
   }
 
   const { id } = req.params;
+  const { reason } = req.body;
+  if (!reason) {
+    res.status(400).json({
+      success: false,
+      message: 'Declare the reason of the report is mandatory',
+      content: {}
+    });
+    return;
+  }
 
   try {
     const message = await Message.getById(id);
@@ -111,6 +122,7 @@ const reportMessage = async (req, res) => {
       });
       return;
     }
+
     // TODO: check if this can be moved to model file
     if (message.reportedBy.userId) {
       res.status(400).json({
@@ -131,9 +143,21 @@ const reportMessage = async (req, res) => {
       return;
     }
 
-    // TODO: Make a call to support ms
-    const reportedMessage = await message.report(userId);
-    res.status(200).json({
+    const reportedMessage = await message.report(userId, reason);
+
+    const reportSent = await sendReport(userId, reportedMessage.id, reason);
+    if (!reportSent) {
+      // Rollback the operation
+      const previousMessage = await message.removeReport();
+      res.status(500).json({
+        success: false,
+        message: 'Error sending report to support service',
+        content: previousMessage
+      });
+      return;
+    }
+
+    res.status(201).json({
       success: true,
       message: 'OK',
       content: reportedMessage
@@ -148,6 +172,7 @@ const reportMessage = async (req, res) => {
       return;
     }
 
+    console.error(err.message);
     res.status(500).json({
       success: false,
       message: `Error when the user '${userId}' reports the message with id '${id}'`,
@@ -156,8 +181,17 @@ const reportMessage = async (req, res) => {
   }
 };
 
-const banMessage = async (req, res) => {
+const updateReport = async (req, res) => {
   const { id } = req.params;
+  const { isBanned } = req.body;
+  if (!isBanned) {
+    res.status(400).json({
+      success: false,
+      message: 'Set the response for the report of the message',
+      content: {}
+    });
+    return;
+  }
 
   try {
     const message = await Message.getById(id);
@@ -178,16 +212,16 @@ const banMessage = async (req, res) => {
       });
       return;
     }
-    if (message.reportedBy.isBanned) {
+    if (typeof message.reportedBy.isBanned !== 'undefined') {
       res.status(400).json({
         success: false,
-        message: `The message with id '${id}' has already been banned`,
+        message: `The report of the message with id '${id}' already has a response`,
         content: {}
       });
       return;
     }
 
-    const bannedMessage = await message.ban();
+    const bannedMessage = await message.updateReport(isBanned);
     res.status(200).json({
       success: true,
       message: 'OK',
@@ -215,5 +249,5 @@ module.exports = {
   getMessage,
   editMessageText,
   reportMessage,
-  banMessage
+  updateReport
 };

@@ -1,7 +1,7 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
-const HOST = process.env.MESSAGES_HOST || 'http://localhost:3000';
+const HOST = 'https://messages-fastmusik-marmolpen3.cloud.okteto.net';
 const options = {
   definition: {
     openapi: '3.0.0',

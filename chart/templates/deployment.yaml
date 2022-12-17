@@ -32,6 +32,21 @@ spec:
                 secretKeyRef:
                   name: messages-nodeenv
                   key: messages_node_env
+            - name: SONGS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: hosts
+                  key: songs_host
+            - name: SUPPORT_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: hosts
+                  key: support_host
+            - name: USERS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: hosts
+                  key: users_host
           ports:
             - name: http
               containerPort: 3000
