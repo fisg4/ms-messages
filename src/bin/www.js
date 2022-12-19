@@ -8,6 +8,8 @@ const debugPkg = require('debug');
 const http = require('http');
 const app = require('../app');
 
+require('../db');
+
 const debug = debugPkg('js/www:server');
 
 /**

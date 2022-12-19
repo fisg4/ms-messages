@@ -43,7 +43,7 @@ messageSchema.statics.getById = (id) => mongoose.model('Message').findById(id);
 
 messageSchema.statics.insert = (userId, roomId, text, replyToId) => {
   let newMessage = {
-    userId, roomId, text, report: {}
+    userId, roomId, text
   };
 
   if (replyToId) { newMessage = { ...newMessage, replyToId }; }
