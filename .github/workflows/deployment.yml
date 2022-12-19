@@ -6,7 +6,7 @@ on:
     
 jobs:
   test:
-    uses: fisg4/ms-messages/.github/workflows/test.yml@main
+    uses: fisg4/ms-messages/.github/workflows/tests.yml@main
   deploy:
     needs: test
     runs-on: ubuntu-latest
