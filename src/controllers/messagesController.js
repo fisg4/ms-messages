@@ -172,7 +172,6 @@ const reportMessage = async (req, res) => {
       return;
     }
 
-    console.error(err.message);
     res.status(500).json({
       success: false,
       message: `Error when the user '${userId}' reports the message with id '${id}'`,
@@ -184,7 +183,7 @@ const reportMessage = async (req, res) => {
 const updateReport = async (req, res) => {
   const { id } = req.params;
   const { isBanned } = req.body;
-  if (!isBanned) {
+  if (isBanned == null) {
     res.status(400).json({
       success: false,
       message: 'Set the response for the report of the message',
@@ -212,7 +211,7 @@ const updateReport = async (req, res) => {
       });
       return;
     }
-    if (typeof message.reportedBy.isBanned !== 'undefined') {
+    if (message.reportedBy.isBanned != null) {
       res.status(400).json({
         success: false,
         message: `The report of the message with id '${id}' already has a response`,

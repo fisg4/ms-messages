@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { Room, Role } = require('../models/Room');
 const Message = require('../models/Message');
 
@@ -124,14 +125,14 @@ const createRoom = async (req, res) => {
     name, description, songId, participants
   } = req.body;
 
-  const finalParticipants = [{ userId, role: Role.ADMIN }];
-  participants.forEach(participantId => finalParticipants.push({ userId: participantId }));
-
-  // TODO: call songs service and get info data for name and description
+  const finalParticipants = [{ userId: ObjectId(userId), role: Role.ADMIN }];
+  participants.forEach(participantId => finalParticipants.push({
+    userId: ObjectId(participantId)
+  }));
 
   try {
     const room = await Room.create({
-      name, description, songId, participants
+      name, description, songId, participants: finalParticipants
     });
     res.status(201).json({
       success: true,
