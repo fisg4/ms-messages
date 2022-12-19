@@ -5,7 +5,10 @@ on:
     branches: [ main ]
     
 jobs:
+  test:
+    uses: fisg4/ms-messages/.github/workflows/tests.yml@main
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     
     steps:
