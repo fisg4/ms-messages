@@ -114,8 +114,28 @@ paths:
                 isBanned:
                   type: boolean
       responses:
-        "201":
-          description: Successful operation. Message reported
+        "200":
+          description: Successful operation. Message report updated
+        "400":
+          description: Validation errors
+        "404":
+          description: Message not found
+  /messages/:id/unban:
+    patch:
+      tags:
+        - Messages
+      summary: Unban a message 
+      description: Remove the actual state of the message report
+      parameters:
+        - name: id
+          in: path
+          description: Message ID in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation. Message report rolled back
         "400":
           description: Validation errors
         "404":

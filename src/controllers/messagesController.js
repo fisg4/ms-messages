@@ -244,9 +244,57 @@ const updateReport = async (req, res) => {
   }
 };
 
+const unbanMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const message = await Message.getById(id);
+    if (!message) {
+      res.status(404).json({
+        success: false,
+        message: `Message with id '${id}' not found`,
+        content: {}
+      });
+      return;
+    }
+
+    if (message.reportedBy.isBanned == null) {
+      res.status(400).json({
+        success: false,
+        message: `The report of the message with id '${id}' has not been banned before`,
+        content: {}
+      });
+      return;
+    }
+
+    const unbannedMessage = await message.unban();
+    res.status(200).json({
+      success: true,
+      message: 'OK',
+      content: unbannedMessage
+    });
+  } catch (err) {
+    if (err.errors) {
+      res.status(400).json({
+        success: false,
+        message: err.message,
+        content: {}
+      });
+      return;
+    }
+
+    res.status(500).json({
+      success: false,
+      message: `Error when unbanning the message with id '${id}'`,
+      content: {}
+    });
+  }
+};
+
 module.exports = {
   getMessage,
   editMessageText,
   reportMessage,
-  updateReport
+  updateReport,
+  unbanMessage
 };
