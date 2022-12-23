@@ -11,4 +11,7 @@ router.route('/:id/report')
   .post(messagesController.reportMessage)
   .patch(messagesController.updateReport);
 
+router.route('/:id/unban')
+  .patch(messagesController.unbanMessage);
+
 export default router;

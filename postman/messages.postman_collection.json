@@ -49,7 +49,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"text\": \"¡Ole que ole, ole, ole!\"\n}"
+					"raw": "{\n\t\"text\": \"¡Ole que ole, ole, ole, oleee!\"\n}"
 				},
 				"url": {
 					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id",
@@ -138,6 +138,42 @@
 						"messages",
 						":id",
 						"report"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "63977f874767e2e75cc8379b"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unbanMessage",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/unban",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages",
+						":id",
+						"unban"
 					],
 					"variable": [
 						{
