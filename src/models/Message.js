@@ -73,4 +73,9 @@ messageSchema.methods.updateReport = function ban(isBanned) {
   return this.save();
 };
 
+messageSchema.methods.unban = function unban() {
+  this.reportedBy.isBanned = null;
+  return this.save();
+};
+
 module.exports = mongoose.model('Message', messageSchema);
