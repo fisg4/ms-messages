@@ -105,12 +105,13 @@ describe('Test messages API', () => {
     });
 
     it('Should return BAD REQUEST when new text is empty', () => {
+      const emptyText = '';
       getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
-      updateTextMock.mockImplementation(async (undefined) => Promise.reject({ errors: 'error'}));
+      updateTextMock.mockImplementation(async (emptyText) => Promise.reject({ errors: 'error'}));
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
-              .send({ text: newText })
+              .send({ text: emptyText })
               .then((response) => {
                 expect(response.status).toBe(400);
                 expect(getByIdMock).toBeCalledWith(messageId);
