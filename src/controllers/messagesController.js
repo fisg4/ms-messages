@@ -1,6 +1,6 @@
 const Message = require('../models/Message');
 const { Room } = require('../models/Room');
-const { sendReport } = require('../services/supportService');
+const supportService = require('../services/supportService');
 
 const getMessage = async (req, res) => {
   const { id } = req.params;
@@ -123,7 +123,6 @@ const reportMessage = async (req, res) => {
       return;
     }
 
-    // TODO: check if this can be moved to model file
     if (message.reportedBy.userId) {
       res.status(400).json({
         success: false,
@@ -144,8 +143,7 @@ const reportMessage = async (req, res) => {
     }
 
     const reportedMessage = await message.report(userId, reason);
-
-    const reportSent = await sendReport(userId, reportedMessage.id, reason);
+    const reportSent = await supportService.sendReport(userId, reportedMessage.id, reason);
     if (!reportSent) {
       // Rollback the operation
       const previousMessage = await message.removeReport();
