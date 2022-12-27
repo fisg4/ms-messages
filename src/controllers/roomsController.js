@@ -1,18 +1,11 @@
 const { ObjectId } = require('mongodb');
 const { Room, Role } = require('../models/Room');
 const Message = require('../models/Message');
+const { decodeToken } = require('../auth/jwt');
 
 const getAllUserRooms = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { page = 0, size = 10 } = req.query;
 
@@ -33,6 +26,9 @@ const getAllUserRooms = async (req, res) => {
 };
 
 const getRoomById = async (req, res) => {
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
+
   const { id } = req.params;
 
   try {
@@ -41,6 +37,15 @@ const getRoomById = async (req, res) => {
       res.status(404).json({
         success: false,
         message: `Room with id '${id}' not found`,
+        content: {}
+      });
+      return;
+    }
+
+    if (!room.checkUserIsParticipant(userId)) {
+      res.status(403).json({
+        success: false,
+        message: 'The user is not a participant of this room',
         content: {}
       });
       return;
@@ -61,16 +66,8 @@ const getRoomById = async (req, res) => {
 };
 
 const deleteRoom = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
 
@@ -110,16 +107,8 @@ const deleteRoom = async (req, res) => {
 };
 
 const createRoom = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const {
     name, description, songId, participants
@@ -158,16 +147,8 @@ const createRoom = async (req, res) => {
 };
 
 const addParticipantsToRoom = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
   const { participants } = req.body;
@@ -217,16 +198,8 @@ const addParticipantsToRoom = async (req, res) => {
 };
 
 const removeParticipantFromRoom = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id, participantId } = req.params;
 
@@ -275,16 +248,8 @@ const removeParticipantFromRoom = async (req, res) => {
 };
 
 const editRoomInfo = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
   const { name, description } = req.body;
@@ -334,16 +299,8 @@ const editRoomInfo = async (req, res) => {
 };
 
 const getAllMessagesFromRoom = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
   const { page = 0, size = 10 } = req.query;
@@ -383,16 +340,8 @@ const getAllMessagesFromRoom = async (req, res) => {
 };
 
 const createNewMessage = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
   const { text, replyToId = null } = req.body;

@@ -24,13 +24,9 @@ paths:
         - Messages
       summary: Edit the message text
       description: Modify the text of the message
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The user who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: Message ID in the system
@@ -51,6 +47,8 @@ paths:
           description: Successful operation. Message updated
         "400":
           description: Validation errors
+        "401":
+          description: Authorization required
         "403":
           description: "User is not the author of the message"
         "404":
@@ -61,13 +59,9 @@ paths:
         - Messages
       summary: Report the message
       description: Report a message and notify support team
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The user who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: Message ID in the system
@@ -88,6 +82,8 @@ paths:
           description: Successful operation. Message reported
         "400":
           description: Message already reported
+        "401":
+          description: Authorization required
         "403":
           description: "User is not a participant of the message's room"
         "404":

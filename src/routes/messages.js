@@ -1,14 +1,16 @@
 const express = require('express');
+const passport = require('passport');
+
 const messagesController = require('../controllers/messagesController');
 
 const router = express.Router();
 
 router.route('/:id')
   .get(messagesController.getMessage)
-  .patch(messagesController.editMessageText);
+  .patch(passport.authenticate('jwt', { session: false }), messagesController.editMessageText);
 
 router.route('/:id/report')
-  .post(messagesController.reportMessage)
+  .post(passport.authenticate('jwt', { session: false }), messagesController.reportMessage)
   .patch(messagesController.updateReport);
 
 router.route('/:id/unban')
