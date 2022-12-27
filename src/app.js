@@ -8,8 +8,6 @@ const logger = require('morgan');
 const routes = require('./routes');
 const swagger = require('../swagger');
 
-require('./db');
-
 const app = express();
 
 app.use(logger('dev'));
