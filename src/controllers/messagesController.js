@@ -1,5 +1,6 @@
 const Message = require('../models/Message');
 const { Room } = require('../models/Room');
+const { decodeToken } = require('../auth/jwt');
 const supportService = require('../services/supportService');
 
 const getMessage = async (req, res) => {
@@ -31,16 +32,8 @@ const getMessage = async (req, res) => {
 };
 
 const editMessageText = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
   const { text } = req.body;
@@ -90,16 +83,8 @@ const editMessageText = async (req, res) => {
 };
 
 const reportMessage = async (req, res) => {
-  // TODO: Modify this when we support authentication and move to middleware
-  const userId = req.header('userId');
-  if (!userId) {
-    res.status(400).json({
-      success: false,
-      message: 'User is not authenticated',
-      content: []
-    });
-    return;
-  }
+  const token = req.headers.authorization;
+  const userId = decodeToken(token).id;
 
   const { id } = req.params;
   const { reason } = req.body;

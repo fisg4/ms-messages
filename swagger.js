@@ -15,6 +15,15 @@ const options = {
     },
     host: HOST,
     basePath: '/api/v1',
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
   },
   apis: ['./docs/**/*.yaml'],
 };

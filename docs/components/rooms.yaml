@@ -5,13 +5,9 @@ paths:
         - Rooms
       summary: Get all rooms
       description: Get all rooms in where the user is a participant
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
         - name: page
           in: query
           description: The page to retrieve (starts from 0)
@@ -33,20 +29,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/PaginatedRooms"
-        "400":
-          description: "User is not authenticated"
+        "401":
+          description: Authoritazation required
     post:
       tags:
         - Rooms
       summary: Create a new room
       description: Creates a new room
-      parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
       requestBody:
         description: Room required properties
         content:
@@ -69,12 +60,16 @@ paths:
           description: Successful operation. Room created
         "400":
           description: Validation errors
+        "401":
+          description: Authoritazation required
   /rooms/:id:
     get:
       tags:
         - Rooms
       summary: Get a room by ID
       description: Returns an existing room by its ID
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -89,6 +84,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Room"
+        "401":
+          description: Authoritazation required
         "404":
           description: "Room not found"
     delete:
@@ -96,13 +93,9 @@ paths:
         - Rooms
       summary: Delete a room
       description: Delete a room
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: Room ID in the system
@@ -112,6 +105,8 @@ paths:
       responses:
         "204":
           description: Room deleted successfully
+        "401":
+          description: Authorization required
         "403":
           description: "User is not the admin of the room"
         "404":
@@ -122,13 +117,8 @@ paths:
         - Rooms
       summary: Add participants to a room
       description: Add a group of participants to a room
-      parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
       requestBody:
         description: List of participants ids
         content:
@@ -145,6 +135,8 @@ paths:
           description: Successful operation. Participants added
         "400":
           description: Validation errors
+        "401":
+          description: Authorization required
         "403":
           description: "User is not the admin of the room"
         "404":
@@ -155,13 +147,9 @@ paths:
         - Rooms
       summary: Remove participant
       description: Remove participant from a room
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: Room ID in the system
@@ -179,6 +167,8 @@ paths:
           description: Participant removed successfully
         "400":
           description: Validation errors
+        "401":
+          description: Authorization required
         "403":
           description: "User is not the admin of the room"
         "404":
@@ -189,13 +179,9 @@ paths:
         - Rooms
       summary: Modify room info
       description: Modify the general info about a room
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: ID of a existing room
@@ -218,6 +204,8 @@ paths:
           description: Successful operation. Room created
         "400":
           description: Validation errors
+        "401":
+          description: Authorization required
         "403":
           description: "User is not the admin of the room"
         "404":
@@ -228,13 +216,9 @@ paths:
         - Rooms
       summary: Get the messages of a room
       description: Returns a paginated list of messages from the desired room.
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: ID of a existing room
@@ -262,8 +246,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/PaginatedMessages"
-        "400":
-          description: "User is not authenticated"
+        "401":
+          description: Authorization required
         "403":
           description: "User is not a participant of the room"
         "404":
@@ -273,13 +257,9 @@ paths:
         - Rooms
       summary: Post a new message to a room
       description: Creates a new message which belongs to the specified room
+      security:
+        - bearerAuth: []
       parameters:
-        - name: userId
-          in: header
-          description: The use who makes the call
-          required: true
-          schema:
-            type: string
         - name: id
           in: path
           description: ID of a existing room
@@ -301,6 +281,8 @@ paths:
           description: Successful operation. Message created
         "400":
           description: Validation errors
+        "401":
+          description: Authorization required
         "403":
           description: "User is not a participant of the room"
         "404":

@@ -6,6 +6,7 @@ const app = require('../src/app');
 const Message = require('../src/models/Message');
 const { Room } = require('../src/models/Room');
 const supportService = require('../src/services/supportService');
+const jwt = require('../src/auth/jwt');
 
 const BASEPATH = "/api/v1";
 
@@ -63,6 +64,8 @@ describe('Test messages API', () => {
     const newText = 'updated test text';
     const userId = '637d0c328a43d958f6ff661f';
 
+    const token = jwt.generateToken({ id: userId });
+
     var getByIdMock;
     var updateTextMock;
 
@@ -84,7 +87,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ text: newText })
               .then((response) => {
                 expect(response.status).toBe(200);
@@ -94,14 +97,14 @@ describe('Test messages API', () => {
               });
     });
 
-    it('Should return BAD REQUEST when there is not the required header', () => {
+    it('Should return UNAUTHORIZED when there is not the required header', () => {
       getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));      
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
               .send({ text: newText })
               .then((response) => {
-                expect(response.status).toBe(400);
+                expect(response.status).toBe(401);
                 expect(getByIdMock).toBeCalledWith(messageId);
               });
     });
@@ -113,7 +116,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ text: emptyText })
               .then((response) => {
                 expect(response.status).toBe(400);
@@ -126,7 +129,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
-              .set('userId', 'wrongUserId')
+              .set('Authorization', `bearer ${jwt.generateToken({ id: 'wrongId' })}`)
               .send({ text: newText })
               .then((response) => {
                 expect(response.status).toBe(403);
@@ -140,7 +143,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ text: newText })
               .then((response) => {
                 expect(response.status).toBe(404);
@@ -156,7 +159,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .patch(`${BASEPATH}/messages/${messageId}`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ text: newText })
               .then((response) => {
                 expect(response.status).toBe(500);
@@ -170,6 +173,8 @@ describe('Test messages API', () => {
     const roomId = '637d0c328a43d958f6ff661d';
     const reason = 'reason test';
     const userId = '637d0c328a43d958f6ff661f';
+
+    const token = jwt.generateToken({ id: userId });
 
     var getMessageByIdMock;
     var getRoomByIdMock;
@@ -205,7 +210,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(201);
@@ -215,13 +220,13 @@ describe('Test messages API', () => {
               });
     });
 
-    it('Should return BAD REQUEST when user is not sent', () => {
+    it('Should return UNAUTHORIZED when user is not sent', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
               .send({ reason })
               .then((response) => {
-                expect(response.status).toBe(400);
+                expect(response.status).toBe(401);
               });
     });
 
@@ -229,7 +234,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason: '' })
               .then((response) => {
                 expect(response.status).toBe(400);
@@ -242,7 +247,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(400);
@@ -257,7 +262,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', 'badUserId')
+              .set('Authorization', `bearer ${jwt.generateToken({ id: 'badUserId' })}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(400);
@@ -271,7 +276,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(403);
@@ -284,7 +289,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(404);
@@ -300,7 +305,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(500);
@@ -314,7 +319,7 @@ describe('Test messages API', () => {
 
       return request(app)
               .post(`${BASEPATH}/messages/${messageId}/report`)
-              .set('userId', userId)
+              .set('Authorization', `bearer ${token}`)
               .send({ reason })
               .then((response) => {
                 expect(response.status).toBe(500);
