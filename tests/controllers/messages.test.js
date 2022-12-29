@@ -1,12 +1,12 @@
-/* eslint-disable */ 
+/* eslint-disable */
 const { ObjectId } = require('mongodb');
 const request = require('supertest');
 
-const app = require('../src/app');
-const Message = require('../src/models/Message');
-const { Room } = require('../src/models/Room');
-const supportService = require('../src/services/supportService');
-const jwt = require('../src/auth/jwt');
+const app = require('../../src/app');
+const Message = require('../../src/models/Message');
+const { Room } = require('../../src/models/Room');
+const supportService = require('../../src/services/supportService');
+const jwt = require('../../src/auth/jwt');
 
 const BASEPATH = "/api/v1";
 
@@ -19,7 +19,7 @@ describe('Test messages API', () => {
       id: messageId, userId: 'usertest', roomId: 'roomtest', text: 'test'
     });
 
-    var getByIdMock;
+    let getByIdMock;
 
     beforeEach(() => {
       getByIdMock = jest.spyOn(Message, 'getById');
@@ -66,8 +66,8 @@ describe('Test messages API', () => {
 
     const token = jwt.generateToken({ id: userId });
 
-    var getByIdMock;
-    var updateTextMock;
+    let getByIdMock;
+    let updateTextMock;
 
     const message = new Message({
       id: messageId, userId: ObjectId(userId), roomId: 'roomtest', text: 'test text'
@@ -176,14 +176,14 @@ describe('Test messages API', () => {
 
     const token = jwt.generateToken({ id: userId });
 
-    var getMessageByIdMock;
-    var getRoomByIdMock;
-    var checkUserIsParticipantMock;
-    var reportMock;
-    var sendReportMock;
-    var removeReportMock;
+    let getMessageByIdMock;
+    let getRoomByIdMock;
+    let checkUserIsParticipantMock;
+    let reportMock;
+    let sendReportMock;
+    let removeReportMock;
 
-    const room = new Room({ roomId });
+    const room = new Room({ id: roomId });
     const message = new Message({
       id: messageId, userId: ObjectId(userId), roomId, text: 'test text'
     });
@@ -321,6 +321,208 @@ describe('Test messages API', () => {
               .post(`${BASEPATH}/messages/${messageId}/report`)
               .set('Authorization', `bearer ${token}`)
               .send({ reason })
+              .then((response) => {
+                expect(response.status).toBe(500);
+              });
+    });
+
+  });
+
+  describe('PATCH messages/:id/report', () => {
+    const messageId = 'idtest';
+    const userId = '637d0c328a43d958f6ff661f';
+    const isBanned = true;
+
+    let getByIdMock;
+    let updateReportMock;
+
+    const message = new Message({
+      id: messageId,
+      userId: ObjectId(userId),
+      text: 'test text',
+      reportedBy: {
+        userId: ObjectId(userId),
+        reason: 'test reason'
+      }
+    });
+    const messageUpdatedReport = { ...message, reportedBy: { userId: ObjectId(userId), reason: 'test reason', isBanned } };
+
+    beforeEach(() => {
+      getByIdMock = jest.spyOn(Message, 'getById');
+      updateReportMock = jest.spyOn(Message.prototype, 'updateReport');
+    });
+
+    it('Should return OK when updating report properly', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      updateReportMock.mockImplementation(async (isBanned) => Promise.resolve(messageUpdatedReport));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .send({ isBanned })
+              .then((response) => {
+                expect(response.status).toBe(200);
+                expect(response.body.content.reportedBy.userId).toBe(userId);
+                expect(response.body.content.reportedBy.isBanned).toBe(isBanned);
+                expect(updateReportMock).toBeCalledWith(isBanned);
+                expect(getByIdMock).toBeCalledWith(messageId);
+              });
+    });
+
+    it('Should return BAD REQUEST when not sending update', () => {
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .then((response) => {
+                expect(response.status).toBe(400);
+              });
+    });
+
+    it('Should return NOT FOUND when there is no message', () => {
+      const wrongMessageId = 'wrongMessageId';
+      getByIdMock.mockImplementation(async (wrongMessageId) => Promise.resolve(null));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .send({ isBanned })
+              .then((response) => {
+                expect(response.status).toBe(404);
+              });
+    });
+
+    it('Should return BAD REQUEST when the message has not been reported previously', () => {
+      const messageNotReported = { ...message, reportedBy: {}};
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(messageNotReported));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .send({ isBanned })
+              .then((response) => {
+                expect(response.status).toBe(400);
+                expect(getByIdMock).toBeCalledWith(messageId);
+              });
+    });
+
+    it('Should return BAD REQUEST when the report is already updated', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(messageUpdatedReport));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .send({ isBanned })
+              .then((response) => {
+                expect(response.status).toBe(400);
+                expect(getByIdMock).toBeCalledWith(messageId);
+              });
+    });
+
+    it('Should return BAD REQUEST when the data sent is wrong', () => {
+      const isBannedWrong = 'this-is-not-boolean';
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      updateReportMock.mockImplementation(async (isBannedWrong) => Promise.reject({ errors: 'isBannedWrong'}))
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .send({ isBanned: isBannedWrong })
+              .then((response) => {
+                expect(response.status).toBe(400);
+              });
+    });
+
+    it('Should return ERROR when exception occurs', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      updateReportMock.mockImplementation(async (isBanned) => {
+        throw new Error('error');
+      });
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/report`)
+              .send({ isBanned })
+              .then((response) => {
+                expect(response.status).toBe(500);
+              });
+    });
+
+  });
+
+  describe('PATCH messages/:id/unban', () => {
+    const messageId = 'idtest';
+    const userId = '637d0c328a43d958f6ff661f';
+
+    let getByIdMock;
+    let unbanMock;
+
+    const message = new Message({
+      id: messageId,
+      userId: ObjectId(userId),
+      text: 'test text',
+      reportedBy: {
+        userId: ObjectId(userId),
+        reason: 'test reason',
+        isBanned: true
+      }
+    });
+    const messageUnbanned = JSON.parse(JSON.stringify(message));
+    messageUnbanned.reportedBy.isBanned = null;
+
+    beforeEach(() => {
+      getByIdMock = jest.spyOn(Message, 'getById');
+      unbanMock = jest.spyOn(Message.prototype, 'unban');
+    });
+
+    it('Should return OK when updating report properly', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      unbanMock.mockImplementation(async () => Promise.resolve(messageUnbanned));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/unban`)
+              .then((response) => {
+                expect(response.status).toBe(200);
+                expect(response.body.content.reportedBy.userId).toBe(userId);
+                expect(response.body.content.reportedBy.isBanned).toBe(null);
+                expect(getByIdMock).toBeCalledWith(messageId);
+              });
+    });
+
+    it('Should return NOT FOUND when there is no message', () => {
+      const wrongMessageId = 'wrongMessageId';
+      getByIdMock.mockImplementation(async (wrongMessageId) => Promise.resolve(null));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/unban`)
+              .then((response) => {
+                expect(response.status).toBe(404);
+              });
+    });
+
+    it('Should return BAD REQUEST when the message has not been banned previously', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(messageUnbanned));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/unban`)
+              .then((response) => {
+                expect(response.status).toBe(400);
+                expect(getByIdMock).toBeCalledWith(messageId);
+              });
+    });
+
+    it('Should return BAD REQUEST when validation problems occur', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      unbanMock.mockImplementation(async () => Promise.reject({ errors: 'Validation failed' }));
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/unban`)
+              .then((response) => {
+                expect(response.status).toBe(400);
+              });
+    });
+
+    it('Should return ERROR when exception occurs', () => {
+      getByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      unbanMock.mockImplementation(async () => {
+        throw new Error('error');
+      });
+
+      return request(app)
+              .patch(`${BASEPATH}/messages/${messageId}/unban`)
               .then((response) => {
                 expect(response.status).toBe(500);
               });

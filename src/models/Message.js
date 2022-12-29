@@ -15,8 +15,6 @@ const messageSchema = new Schema({
 
 // static methods
 
-messageSchema.statics.getAll = (page = 0, size = 10) => mongoose.model('Message').find({ limit: size, skip: page * size });
-
 messageSchema.statics.getAllFromRoomId = async (roomId, page = 0, limit = 10) => {
   const count = await mongoose.model('Message').find({ roomId }).count();
   if (count === 0) {

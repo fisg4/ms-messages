@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* eslint-disable */
 /**
  * Module dependencies.
  */
@@ -7,8 +7,7 @@
 const debugPkg = require('debug');
 const http = require('http');
 const app = require('../app');
-
-require('../db');
+const db = require('../db');
 
 const debug = debugPkg('js/www:server');
 
