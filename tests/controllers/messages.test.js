@@ -174,7 +174,7 @@ describe('Test messages API', () => {
     const reason = 'reason test';
     const userId = '637d0c328a43d958f6ff661f';
 
-    const token = jwt.generateToken({ id: userId });
+    const token = jwt.generateToken({ id: userId, role: 'user' });
 
     let getMessageByIdMock;
     let getRoomByIdMock;
@@ -205,7 +205,7 @@ describe('Test messages API', () => {
       getRoomByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
       reportMock.mockImplementation(async (userId, reason) => Promise.resolve(reportedMessage));
       checkUserIsParticipantMock.mockImplementation((userId) => true);
-      sendReportMock.mockImplementation(async (userId, messageId, reason) => Promise.resolve(true));
+      sendReportMock.mockImplementation(async (token, messageId, reason) => Promise.resolve(true));
       removeReportMock.mockImplementation(async () => Promise.resolve(message));
 
       return request(app)

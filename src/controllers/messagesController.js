@@ -128,7 +128,7 @@ const reportMessage = async (req, res) => {
     }
 
     const reportedMessage = await message.report(userId, reason);
-    const reportSent = await supportService.sendReport(userId, reportedMessage.id, reason);
+    const reportSent = await supportService.sendReport(token, reportedMessage.id, reason);
     if (!reportSent) {
       // Rollback the operation
       const previousMessage = await message.removeReport();
