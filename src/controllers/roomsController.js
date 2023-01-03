@@ -68,7 +68,7 @@ const getRoomById = async (req, res) => {
 const deleteRoom = async (req, res) => {
   const token = req.headers.authorization;
   const userId = decodeToken(token).id;
-
+  
   const { id } = req.params;
 
   try {
@@ -115,7 +115,7 @@ const createRoom = async (req, res) => {
   } = req.body;
 
   const finalParticipants = [{ userId: ObjectId(userId), role: Role.ADMIN }];
-  participants.forEach(participantId => finalParticipants.push({
+  participants?.forEach(participantId => finalParticipants.push({
     userId: ObjectId(participantId)
   }));
 
