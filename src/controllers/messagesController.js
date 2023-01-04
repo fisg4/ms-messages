@@ -1,3 +1,7 @@
+import * as deepl from 'deepl-node';
+const deeplKey = process.env.DEEPL_KEY;
+const translator = new deepl.Translator(deeplKey);
+
 const Message = require('../models/Message');
 const { Room } = require('../models/Room');
 const { decodeToken } = require('../auth/jwt');
@@ -274,10 +278,31 @@ const unbanMessage = async (req, res) => {
   }
 };
 
+const translateMessage = async (req, res) => {
+  const message = req.body.message;
+
+  try {
+    var translated = await translator.translateText(message.text, null, 'es');
+    res.status(200)
+      .json({
+        success: true,
+        message: 'OK',
+        content: translated
+      });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: `Error when translating message'`,
+      content: {}
+    });
+  }
+}
+
 module.exports = {
   getMessage,
   editMessageText,
   reportMessage,
   updateReport,
-  unbanMessage
+  unbanMessage,
+  translateMessage
 };
