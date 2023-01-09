@@ -5,9 +5,13 @@ const messagesController = require('../controllers/messagesController');
 
 const router = express.Router();
 
+
 router.route('/:id')
   .get(messagesController.getMessage)
   .patch(passport.authenticate('jwt', { session: false }), messagesController.editMessageText);
+
+router.route('/:id/translate')
+  .patch(messagesController.translateMessage);
 
 router.route('/:id/report')
   .post(passport.authenticate('jwt', { session: false }), messagesController.reportMessage)
