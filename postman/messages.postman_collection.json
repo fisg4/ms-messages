@@ -107,6 +107,42 @@
 			"response": []
 		},
 		{
+			"name": "translateMessage",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}{{port}}/api/{{apiVersion}}/messages/:id/translate",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"api",
+						"{{apiVersion}}",
+						"messages",
+						":id",
+						"translate"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "63bc51d006717eded000dc77"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "updateMessageReport",
 			"request": {
 				"auth": {

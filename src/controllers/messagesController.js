@@ -88,7 +88,6 @@ const translateMessage = async (req, res) => {
 
   try {
     const message = await Message.getById(id);
-
     if (!message) {
       res.status(404).json({
         success: false,
@@ -97,50 +96,46 @@ const translateMessage = async (req, res) => {
       });
       return;
     }
-
-/*
-    If there's content, it means it's already translated,
-    thus there's no need to perform the call.
-*/
-
-    if ((message.translatedMessage == '') || (!message.translatedMessage)) {
-      
-      const translated = await translateService.translateMessage(message);
-
-      if (translated.status === 200) {
-        res.status(translated.status).json({
-          success: true,
-          message: 'OK',
-          content: translated.message
-        });
-      } else {
-        res.status(500).json({
-          success: false,
-          message: 'Error while traducing the message',
-          content: null
-        });
-      }
-
-    } else {
-
+    console.log('Este es el mensaje', message);
+    /*
+        If there's content, it means it's already translated,
+        thus there's no need to perform the call.
+    */
+    if (message.translatedText) {
       res.status(400).json({
         success: false,
         message: 'Already translated',
-        content: null
-      })
-    
+        content: {}
+      });
+      return;
     }
 
+    console.log('no debería esta aquí');
+
+    const translatedText = await translateService.translate(message.text);
+    const messageTranslated = await message.addTranslationText(translatedText);
+    res.status(201).json({
+      success: true,
+      message: 'OK',
+      content: messageTranslated
+    });
   } catch (err) {
+    if (err.errors) {
+      res.status(400).json({
+        success: false,
+        message: err.message,
+        content: {}
+      });
+      return;
+    }
 
     res.status(500).json({
       success: false,
-      message: 'Error retrieving the message',
+      message: 'Error translating the message text',
       content: null
     });
   }
-
-}
+};
 
 const reportMessage = async (req, res) => {
   const token = req.headers.authorization;
