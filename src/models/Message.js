@@ -4,14 +4,14 @@ const messageSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, required: true },
   roomId: { type: Schema.Types.ObjectId, required: true },
   text: { type: String, required: true, maxLength: 255 },
+  translatedText: { type: String, maxLength: 255 },
   replyToId: { type: Schema.Types.ObjectId },
   reportedBy: {
     userId: { type: Schema.Types.ObjectId },
     reason: { type: String },
     madeAt: { type: Date },
     isBanned: { type: Boolean }
-  },
-  translatedMessage: { type: String, default: '', maxLength: 255 }
+  }
 }, { timestamps: true });
 
 // static methods
@@ -57,11 +57,15 @@ messageSchema.methods.updateText = function updateText(text) {
   return this.save();
 };
 
+messageSchema.methods.addTranslationText = function addTranslation(text) {
+  this.translatedText = text;
+  return this.save();
+};
+
 messageSchema.methods.report = function report(userId, reason) {
   this.reportedBy = { userId, madeAt: Date.now(), reason };
   return this.save();
 };
-
 
 messageSchema.methods.removeReport = function removeReport() {
   this.reportedBy = null;

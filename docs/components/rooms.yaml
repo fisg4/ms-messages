@@ -117,6 +117,7 @@ paths:
         - Rooms
       summary: Add participants to a room
       description: Add a group of participants to a room
+      deprecated: true
       security:
         - bearerAuth: []
       requestBody:
@@ -147,6 +148,7 @@ paths:
         - Rooms
       summary: Remove participant
       description: Remove participant from a room
+      deprecated: true
       security:
         - bearerAuth: []
       parameters:

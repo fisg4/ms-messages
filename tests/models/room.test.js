@@ -1,5 +1,4 @@
 /* eslint-disable */
-const expectCt = require('helmet/dist/middlewares/expect-ct');
 const { ObjectId } = require('mongodb');
 const { Room, Role } = require('../../src/models/Room');
 

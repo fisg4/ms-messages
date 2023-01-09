@@ -116,6 +116,30 @@ paths:
           description: Validation errors
         "404":
           description: Message not found
+  /messages/:id/translate:
+    post:
+      tags:
+        - Messages
+      summary: Translate the message's text
+      description: Translate the message's text
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Message ID in the system
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Successful operation. Translation created
+        "400":
+          description: Message already translated
+        "401":
+          description: Authorization required
+        "404":
+          description: "Message not found"
   /messages/:id/unban:
     patch:
       tags:
