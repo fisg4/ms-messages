@@ -96,7 +96,6 @@ const translateMessage = async (req, res) => {
       });
       return;
     }
-    console.log('Este es el mensaje', message);
     /*
         If there's content, it means it's already translated,
         thus there's no need to perform the call.
@@ -109,8 +108,6 @@ const translateMessage = async (req, res) => {
       });
       return;
     }
-
-    console.log('no debería esta aquí');
 
     const translatedText = await translateService.translate(message.text);
     const messageTranslated = await message.addTranslationText(translatedText);
