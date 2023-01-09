@@ -4,6 +4,8 @@ messages:
 messagesMongoUrl: mongodb://mongo/test
 messagesNodeEnv: prod
 
+messagesDeeplKey: lorem
+
 songsHost: http://localhost:3001
 supportHost: http://localhost:3002
 usersHost: http://localhost:3003
