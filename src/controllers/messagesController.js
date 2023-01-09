@@ -1,11 +1,8 @@
-import * as deepl from 'deepl-node';
-const deeplKey = process.env.DEEPL_KEY;
-const translator = new deepl.Translator(deeplKey);
-
 const Message = require('../models/Message');
 const { Room } = require('../models/Room');
 const { decodeToken } = require('../auth/jwt');
 const supportService = require('../services/supportService');
+const translateService = require('../services/translateService');
 
 const getMessage = async (req, res) => {
   const { id } = req.params;
@@ -85,6 +82,65 @@ const editMessageText = async (req, res) => {
     });
   }
 };
+
+const translateMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const message = await Message.getById(id);
+
+    if (!message) {
+      res.status(404).json({
+        success: false,
+        message: `Message with id '${id}' not found`,
+        content: {}
+      });
+      return;
+    }
+
+/*
+    If there's content, it means it's already translated,
+    thus there's no need to perform the call.
+*/
+
+    if ((message.translatedMessage == '') || (!message.translatedMessage)) {
+      
+      const translated = await translateService.translateMessage(message);
+
+      if (translated.status === 200) {
+        res.status(translated.status).json({
+          success: true,
+          message: 'OK',
+          content: translated.message
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: 'Error while traducing the message',
+          content: null
+        });
+      }
+
+    } else {
+
+      res.status(400).json({
+        success: false,
+        message: 'Already translated',
+        content: null
+      })
+    
+    }
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving the message',
+      content: null
+    });
+  }
+
+}
 
 const reportMessage = async (req, res) => {
   const token = req.headers.authorization;
@@ -278,31 +334,11 @@ const unbanMessage = async (req, res) => {
   }
 };
 
-const translateMessage = async (req, res) => {
-  const message = req.body.message;
-
-  try {
-    var translated = await translator.translateText(message.text, null, 'es');
-    res.status(200)
-      .json({
-        success: true,
-        message: 'OK',
-        content: translated
-      });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: `Error when translating message'`,
-      content: {}
-    });
-  }
-}
-
 module.exports = {
   getMessage,
   editMessageText,
+  translateMessage,
   reportMessage,
   updateReport,
-  unbanMessage,
-  translateMessage
+  unbanMessage
 };

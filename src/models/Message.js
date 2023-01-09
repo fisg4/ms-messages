@@ -10,7 +10,8 @@ const messageSchema = new Schema({
     reason: { type: String },
     madeAt: { type: Date },
     isBanned: { type: Boolean }
-  }
+  },
+  translatedMessage: { type: String, default: '', maxLength: 255 }
 }, { timestamps: true });
 
 // static methods
@@ -60,6 +61,7 @@ messageSchema.methods.report = function report(userId, reason) {
   this.reportedBy = { userId, madeAt: Date.now(), reason };
   return this.save();
 };
+
 
 messageSchema.methods.removeReport = function removeReport() {
   this.reportedBy = null;
