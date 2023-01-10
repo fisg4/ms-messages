@@ -68,7 +68,7 @@ const getRoomById = async (req, res) => {
 const deleteRoom = async (req, res) => {
   const token = req.headers.authorization;
   const userId = decodeToken(token).id;
-  
+
   const { id } = req.params;
 
   try {
