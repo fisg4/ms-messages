@@ -8,6 +8,7 @@ deploy:
     --set messagesMongoUrl=$MESSAGES_DB_URL
     --set messagesNodeEnv=$MESSAGES_NODE_ENV
     --set messagesDeeplKey=$DEEPL_KEY
+    --set messagesJwtSecret=$JWT_SECRET
 
 dev:
   ms-messages:
