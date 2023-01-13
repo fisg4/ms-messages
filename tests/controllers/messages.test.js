@@ -6,6 +6,7 @@ const app = require('../../src/app');
 const Message = require('../../src/models/Message');
 const { Room } = require('../../src/models/Room');
 const supportService = require('../../src/services/supportService');
+const translateService = require('../../src/services/translateService');
 const jwt = require('../../src/auth/jwt');
 
 const BASEPATH = "/api/v1";
@@ -174,7 +175,7 @@ describe('Test messages API', () => {
     const reason = 'reason test';
     const userId = '637d0c328a43d958f6ff661f';
 
-    const token = jwt.generateToken({ id: userId });
+    const token = jwt.generateToken({ id: userId, role: 'user' });
 
     let getMessageByIdMock;
     let getRoomByIdMock;
@@ -205,7 +206,7 @@ describe('Test messages API', () => {
       getRoomByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
       reportMock.mockImplementation(async (userId, reason) => Promise.resolve(reportedMessage));
       checkUserIsParticipantMock.mockImplementation((userId) => true);
-      sendReportMock.mockImplementation(async (userId, messageId, reason) => Promise.resolve(true));
+      sendReportMock.mockImplementation(async (token, messageId, reason) => Promise.resolve(true));
       removeReportMock.mockImplementation(async () => Promise.resolve(message));
 
       return request(app)
@@ -321,6 +322,121 @@ describe('Test messages API', () => {
               .post(`${BASEPATH}/messages/${messageId}/report`)
               .set('Authorization', `bearer ${token}`)
               .send({ reason })
+              .then((response) => {
+                expect(response.status).toBe(500);
+              });
+    });
+
+  });
+
+  describe('POST messages/:id/translate', () => {
+    const messageId = 'idtest';
+    const userId = '637d0c328a43d958f6ff661f';
+    const text = 'test text';
+    const translatedText = 'texto de prueba';
+
+    const token = jwt.generateToken({ id: userId, role: 'user' });
+
+    let getMessageByIdMock;
+    let translateMock;
+    let addTranslationTextMock;
+
+    const message = new Message({
+      id: messageId, userId: ObjectId(userId), text
+    });
+    const translatedMessage = new Message({
+      id: messageId, userId: ObjectId(userId), text, translatedText
+    });
+
+    beforeEach(() => {
+      getMessageByIdMock = jest.spyOn(Message, 'getById');
+      translateMock = jest.spyOn(translateService, 'translate');
+      addTranslationTextMock = jest.spyOn(Message.prototype, 'addTranslationText');
+    });
+
+    it('Should return OK when reporting', () => {
+      getMessageByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      translateMock.mockImplementation(async (text) => Promise.resolve(translatedText));
+      addTranslationTextMock.mockImplementation(async (translatedText) => Promise.resolve(translatedMessage));
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .set('Authorization', `bearer ${token}`)
+              .then((response) => {
+                expect(response.status).toBe(201);
+                expect(response.body.content.translatedText).toBe(translatedText);
+                expect(getMessageByIdMock).toBeCalledWith(messageId);
+              });
+    });
+
+    it('Should return UNAUTHORIZED when user is not sent', () => {
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .then((response) => {
+                expect(response.status).toBe(401);
+              });
+    });
+
+    it('Should return BAD REQUEST when the message is already translated', () => {
+      getMessageByIdMock.mockImplementation(async (messageId) => Promise.resolve({ ...message, translatedText }));
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .set('Authorization', `bearer ${token}`)
+              .then((response) => {
+                expect(response.status).toBe(400);
+              });
+    });
+
+    it('Should return BAD REQUEST when the validation fails', () => {
+      const translatedTextBad = null;
+      getMessageByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      translateMock.mockImplementation(async (text) => Promise.resolve(translatedTextBad));
+      addTranslationTextMock.mockImplementation(async (translatedTextBad) => Promise.reject({ errors: 'Translation cannot be null' }));
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .set('Authorization', `bearer ${token}`)
+              .then((response) => {
+                expect(response.status).toBe(400);
+              });
+    });
+
+    it('Should return NOT FOUND when there is no message', () => {
+      const wrongMessageId = 'wrongMessageId';
+      getMessageByIdMock.mockImplementation(async (wrongMessageId) => Promise.resolve(null));
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .set('Authorization', `bearer ${token}`)
+              .then((response) => {
+                expect(response.status).toBe(404);
+              });
+    });
+
+    it('Should return ERROR when there are problems with translation service', () => {
+      const wrongText = 'wrongText';
+      getMessageByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      translateMock.mockImplementation(async (wrongText) => Promise.reject({}));
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .set('Authorization', `bearer ${token}`)
+              .then((response) => {
+                expect(response.status).toBe(500);
+              });
+    });
+
+    it('Should return ERROR when exception occurs', () => {
+      getMessageByIdMock.mockImplementation(async (messageId) => Promise.resolve(message));
+      translateMock.mockImplementation(async (text) => {
+        throw new Error('error');
+      });
+
+      return request(app)
+              .post(`${BASEPATH}/messages/${messageId}/translate`)
+              .set('Authorization', `bearer ${token}`)
               .then((response) => {
                 expect(response.status).toBe(500);
               });

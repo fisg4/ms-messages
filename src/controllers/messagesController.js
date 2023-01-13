@@ -2,6 +2,7 @@ const Message = require('../models/Message');
 const { Room } = require('../models/Room');
 const { decodeToken } = require('../auth/jwt');
 const supportService = require('../services/supportService');
+const translateService = require('../services/translateService');
 
 const getMessage = async (req, res) => {
   const { id } = req.params;
@@ -82,6 +83,57 @@ const editMessageText = async (req, res) => {
   }
 };
 
+const translateMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const message = await Message.getById(id);
+    if (!message) {
+      res.status(404).json({
+        success: false,
+        message: `Message with id '${id}' not found`,
+        content: {}
+      });
+      return;
+    }
+    /*
+        If there's content, it means it's already translated,
+        thus there's no need to perform the call.
+    */
+    if (message.translatedText) {
+      res.status(400).json({
+        success: false,
+        message: 'Already translated',
+        content: {}
+      });
+      return;
+    }
+
+    const translatedText = await translateService.translate(message.text);
+    const messageTranslated = await message.addTranslationText(translatedText);
+    res.status(201).json({
+      success: true,
+      message: 'OK',
+      content: messageTranslated
+    });
+  } catch (err) {
+    if (err.errors) {
+      res.status(400).json({
+        success: false,
+        message: err.message,
+        content: {}
+      });
+      return;
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Error translating the message text',
+      content: null
+    });
+  }
+};
+
 const reportMessage = async (req, res) => {
   const token = req.headers.authorization;
   const userId = decodeToken(token).id;
@@ -128,7 +180,7 @@ const reportMessage = async (req, res) => {
     }
 
     const reportedMessage = await message.report(userId, reason);
-    const reportSent = await supportService.sendReport(userId, reportedMessage.id, reason);
+    const reportSent = await supportService.sendReport(token, reportedMessage.id, reason);
     if (!reportSent) {
       // Rollback the operation
       const previousMessage = await message.removeReport();
@@ -277,6 +329,7 @@ const unbanMessage = async (req, res) => {
 module.exports = {
   getMessage,
   editMessageText,
+  translateMessage,
   reportMessage,
   updateReport,
   unbanMessage

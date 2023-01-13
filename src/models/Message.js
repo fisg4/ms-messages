@@ -4,6 +4,7 @@ const messageSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, required: true },
   roomId: { type: Schema.Types.ObjectId, required: true },
   text: { type: String, required: true, maxLength: 255 },
+  translatedText: { type: String, maxLength: 255 },
   replyToId: { type: Schema.Types.ObjectId },
   reportedBy: {
     userId: { type: Schema.Types.ObjectId },
@@ -25,7 +26,7 @@ messageSchema.statics.getAllFromRoomId = async (roomId, page = 0, limit = 10) =>
 
   const messages = await mongoose.model('Message')
     .find({ roomId })
-    .sort({ createdAt: 1 })
+    .sort({ createdAt: -1 })
     .skip(limit * page)
     .limit(limit);
 
@@ -53,6 +54,11 @@ messageSchema.statics.insert = (userId, roomId, text, replyToId) => {
 
 messageSchema.methods.updateText = function updateText(text) {
   this.text = text;
+  return this.save();
+};
+
+messageSchema.methods.addTranslationText = function addTranslation(text) {
+  this.translatedText = text;
   return this.save();
 };
 

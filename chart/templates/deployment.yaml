@@ -32,6 +32,16 @@ spec:
                 secretKeyRef:
                   name: messages-nodeenv
                   key: messages_node_env
+            - name: DEEPL_KEY
+              valueFrom:
+                  secretKeyRef:
+                    name: messages-extapis
+                    key: deepl_key
+            - name: JWT_SECRET
+              valueFrom:
+                  secretKeyRef:
+                    name: messages-auth
+                    key: jwt_secret
             - name: SONGS_HOST
               valueFrom:
                 secretKeyRef:

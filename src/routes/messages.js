@@ -9,6 +9,9 @@ router.route('/:id')
   .get(messagesController.getMessage)
   .patch(passport.authenticate('jwt', { session: false }), messagesController.editMessageText);
 
+router.route('/:id/translate')
+  .post(passport.authenticate('jwt', { session: false }), messagesController.translateMessage);
+
 router.route('/:id/report')
   .post(passport.authenticate('jwt', { session: false }), messagesController.reportMessage)
   .patch(messagesController.updateReport);

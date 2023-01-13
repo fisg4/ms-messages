@@ -1,7 +1,8 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
-const HOST = 'https://messages-fastmusik-marmolpen3.cloud.okteto.net';
+const PORT = process.env.PORT || 3000;
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -9,21 +10,17 @@ const options = {
       title: 'FastMusik Messages Microservice API',
       version: '1.0.0',
       description:
-        'Specification of models and endpoints for communication and integration with the service offered by ms-messages.\n\n'
-        + `Host: ${HOST}\n\n`
-        + 'Base Path: /api/v1',
+        'Specification of models and endpoints for communication and integration with the service offered by ms-messages.'
     },
-    host: HOST,
-    basePath: '/api/v1',
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        }
-      }
+    servers: [{
+      url: 'https://messages-fastmusik-marmolpen3.cloud.okteto.net/api/v1',
+      description: 'Production server'
     },
+    {
+      url: `http://localhost:${PORT}/api/v1`,
+      description: 'Development server'
+    },
+    ],
   },
   apis: ['./docs/**/*.yaml'],
 };
