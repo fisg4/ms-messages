@@ -26,7 +26,7 @@ messageSchema.statics.getAllFromRoomId = async (roomId, page = 0, limit = 10) =>
 
   const messages = await mongoose.model('Message')
     .find({ roomId })
-    .sort({ createdAt: 1 })
+    .sort({ createdAt: -1 })
     .skip(limit * page)
     .limit(limit);
 
