@@ -13,7 +13,7 @@ describe('Test rooms API', () => {
 
     /* ======================================= GET Rooms as user ======================================= */
 
-    describe('GET rooms/', () => {
+    describe('GET /rooms', () => {
 
         const roomId1 = 'roomId1';
         const roomId2 = 'roomId2';
@@ -93,7 +93,7 @@ describe('Test rooms API', () => {
 
     /* ======================================= GET Room by roomId ======================================= */
 
-    describe('GET rooms/:id', () => {
+    describe('GET /rooms/:id', () => {
 
         const roomId = 'roomId';
 
@@ -146,6 +146,19 @@ describe('Test rooms API', () => {
                 });
         });
 
+        it('Should return 403 the user is not a participant', () => {
+            getByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            const token = jwt.generateToken({ id: 'wrongId' })
+
+            return request(app)
+                .get(`${BASE_PATH}/rooms/${roomId}`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toEqual(false);
+                });
+        });
+
         it('Should return 404 when the room with the corresponding id is not found', () => {
             const wrongId = 'wrongId';
             getByIdMock.mockImplementation(async (wrongId) => Promise.resolve(null));
@@ -178,7 +191,7 @@ describe('Test rooms API', () => {
 
     /* ======================================= POST Room ======================================= */
 
-    describe('POST rooms', () => {
+    describe('POST /rooms', () => {
 
         const roomId = 'roomId';
         const adminId = '637d0c328a43d958f6ff661f';
@@ -186,22 +199,12 @@ describe('Test rooms API', () => {
         const songId = '637d0c328a43d958f6ff661a';
         const token = jwt.generateToken({ id: adminId });
 
-        const admin = {
-            userId: ObjectId(adminId),
-            role: Role.ADMIN
-        }
-
-        const user = {
-            userId: ObjectId(userId),
-            role: Role.ADMIN
-        }
-
         var room = new Room({
             id: roomId,
             name: 'POST room name',
             description: 'POST room description',
             songId: ObjectId(songId),
-            participants: [admin, user]
+            participants: [userId]
         });
 
         let create;
@@ -224,6 +227,19 @@ describe('Test rooms API', () => {
                 })
         });
 
+        it('Should return 400 when the body is wrong', () => {
+            create.mockImplementation(async () => Promise.reject({ errors: 'errors'}));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ ... room, songId: '' })
+                .then((res) => {
+                    expect(res.status).toBe(400);
+                    expect(res.body.success).toBe(false);
+                })
+        });
+
         it('Should return 401 when the user is not authenticated', () => {
             create.mockImplementation(async () => Promise.resolve(true));
 
@@ -234,6 +250,102 @@ describe('Test rooms API', () => {
                     expect(res.status).toBe(401);
                     expect(res.body.content).toBe(undefined);
                     expect(res.body.success).toBe(undefined);
+                })
+        });
+
+        it('Should return 500 an error occurs', () => {
+            create.mockImplementation(async () => Promise.reject({}));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/`)
+                .set('Authorization', `bearer ${token}`)
+                .send(room)
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
+                })
+        });
+
+    });
+
+    /* ======================================= DELETE Room ======================================= */
+
+    describe('DELETE /rooms', () => {
+
+        const roomId = 'roomId';
+        const adminId = '637d0c328a43d958f6ff661f';
+        const userId = '637d0c328a43d958f6ff661d';
+        const songId = '637d0c328a43d958f6ff661a';
+        const token = jwt.generateToken({ id: adminId });
+
+        var room = new Room({
+            id: roomId,
+            name: 'POST room name',
+            description: 'POST room description',
+            songId: ObjectId(songId),
+            participants: [
+                { userId: ObjectId(adminId), role: Role.ADMIN },
+                { userId: ObjectId(userId), role: Role.NORMAL }
+            ]
+        });
+
+        let findByIdMock;
+        let findByIdAndDeleteMock;
+
+        beforeEach(() => {
+            findByIdMock = jest.spyOn(Room, 'findById');
+            findByIdAndDeleteMock = jest.spyOn(Room, 'findByIdAndDelete');
+        });
+
+        it('Should return 204 when the room is deleted', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            findByIdAndDeleteMock.mockImplementation(async (roomId) => Promise.resolve(true));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(204);
+                });
+        });
+
+        it('Should return 403 when the user is not the room\'s admin', () => {
+            const token = jwt.generateToken({ id: userId })
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toBe(false);
+                })
+        });
+
+        it('Should return 404 when the room does not exist', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(false));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}`)
+                .set('Authorization', `bearer ${token}`)
+                .send(room)
+                .then((res) => {
+                    expect(res.status).toBe(404);
+                    expect(res.body.success).toBe(false);
+                })
+        });
+
+        it('Should return 500 when an error occurs', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            findByIdAndDeleteMock.mockImplementation(async (roomId) => Promise.reject({}));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}`)
+                .set('Authorization', `bearer ${token}`)
+                .send(room)
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
                 })
         });
 
@@ -258,16 +370,6 @@ describe('Test rooms API', () => {
 
         const user = {
             userId: ObjectId(userId),
-            role: Role.ADMIN
-        }
-
-        const newUser1 = {
-            userId: ObjectId(newUserId),
-            role: Role.NORMAL
-        }
-
-        const newUser2 = {
-            userId: ObjectId(newUserId2),
             role: Role.NORMAL
         }
 
@@ -288,17 +390,32 @@ describe('Test rooms API', () => {
         });
 
         it("Should update with new user", () => {
+            const newParticipants = [newUserId, newUserId2]
             getByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
-            addParticipantsMock.mockImplementation(async (newParticipant) => Promise.resolve(newParticipant));
+            addParticipantsMock.mockImplementation(async (newParticipants) => Promise.resolve({ ...room, participants: [...newParticipants ]}));
 
             return request(app)
                 .post(`${BASE_PATH}/rooms/${roomId}/participants`)
                 .set('Authorization', `bearer ${token}`)
-                .send([newUser1, newUser2])
+                .send({ participants: newParticipants })
                 .then((res) => {
                     expect(res.status).toBe(200);
-                    expect(res.headers['content-type']).toContain('json');
                     expect(res.body.success).toBe(true);
+                });
+        });
+
+        it("Should return 400 when data sent is wrong", () => {
+            const newParticipant = ['wrongId']
+            getByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            addParticipantsMock.mockImplementation(async (newParticipant) => Promise.reject({ errors: 'err' }));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/participants`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ participants: newParticipant })
+                .then((res) => {
+                    expect(res.status).toBe(400);
+                    expect(res.body.success).toBe(false);
                 });
         });
 
@@ -308,10 +425,51 @@ describe('Test rooms API', () => {
 
             return request(app)
                 .post(`${BASE_PATH}/rooms/${roomId}/participants`)
-                .send([newUser1, newUser2])
+                .send({ participants: [newUserId, newUserId2] })
                 .then((res) => {
                     expect(res.status).toBe(401);
                     expect(res.body).toEqual({});
+                });
+        });
+
+        it("Should return 403 when the user is not the room\'s admin", () => {
+            const token = jwt.generateToken({ id: userId })
+            getByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/participants`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ participants: [newUserId, newUserId2] })
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toEqual(false);
+                });
+        });
+
+        it("Should return 404 when the room does not exists", () => {
+            getByIdMock.mockImplementation(async (roomId) => Promise.resolve(false));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/participants`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ participants: [newUserId, newUserId2] })
+                .then((res) => {
+                    expect(res.status).toBe(404);
+                    expect(res.body.success).toEqual(false);
+                });
+        });
+
+        it("Should return 500 when an error occurs", () => {
+            getByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            addParticipantsMock.mockImplementation(async (newParticipant) => Promise.reject({}));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/participants`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ participants: [newUserId, newUserId2] })
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
                 });
         });
 
@@ -333,7 +491,7 @@ describe('Test rooms API', () => {
 
         const user = {
             userId: ObjectId(userId),
-            role: Role.ADMIN
+            role: Role.NORMAL
         }
 
         var room = new Room({
@@ -344,40 +502,97 @@ describe('Test rooms API', () => {
             participants: [admin, user]
         });
 
-        const updatedInfo = {
-            name: 'New name'
-        }
+        const [ name, description ] = [ 'name', 'description' ];
 
-        let modifyInfo;
+        let findByIdMock;
+        let modifyInfoMock;
 
         beforeEach(() => {
-            modifyInfo = jest.spyOn(Room.prototype, 'modifyInfo');
+            findByIdMock = jest.spyOn(Room, 'findById');
+            modifyInfoMock = jest.spyOn(Room.prototype, 'modifyInfo');
         });
 
         it("Should return 200 when modifying the room's info", () => {
-            modifyInfo.mockImplementation(async (info) => Promise.resolve(updatedInfo));
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room))
+            modifyInfoMock.mockImplementation(async (name, description) => Promise.resolve({ ...room, name, description }));
 
             return request(app)
                 .patch(`${BASE_PATH}/rooms/${roomId}/info`)
                 .set('Authorization', `bearer ${token}`)
-                .send(updatedInfo)
+                .send({ name, description })
                 .then((res) => {
                     expect(res.status).toBe(200);
-                    expect(res.headers['content-type']).toContain('json');
-                    expect(res.body.content).toEqual({ name: 'New name' });
+                    expect(res.body.content.name).toEqual(name);
+                    expect(res.body.content.description).toEqual(description);
+                });
+        });
 
+        it("Should return 400 when data sent is wrong", () => {
+            const description = '';
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room))
+            modifyInfoMock.mockImplementation(async (name, description) => Promise.reject({ errors: 'err' }));
+
+            return request(app)
+                .patch(`${BASE_PATH}/rooms/${roomId}/info`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ name, description })
+                .then((res) => {
+                    expect(res.status).toBe(400);
+                    expect(res.body.success).toBe(false);
                 });
         });
 
         it("Should return 401 when the user is not authenticated", () => {
-            modifyInfo.mockImplementation(async (info) => Promise.resolve(updatedInfo));
+            modifyInfoMock.mockImplementation(async (info) => Promise.resolve(updatedInfo));
 
             return request(app)
                 .patch(`${BASE_PATH}/rooms/${roomId}/info`)
-                .send(updatedInfo)
+                .send({ name, description })
                 .then((res) => {
                     expect(res.status).toBe(401);
                     expect(res.body).toEqual({});
+                });
+        });
+
+        it("Should return 403 when the user is not room's admin", () => {
+            const token = jwt.generateToken({ id: '1234'})
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room))
+
+            return request(app)
+                .patch(`${BASE_PATH}/rooms/${roomId}/info`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ name, description })
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it("Should return 404 when room does not exist", () => {
+            const description = '';
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(false))
+
+            return request(app)
+                .patch(`${BASE_PATH}/rooms/${roomId}/info`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ name, description })
+                .then((res) => {
+                    expect(res.status).toBe(404);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it("Should return 500 when data sent is wrong", () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room))
+            modifyInfoMock.mockImplementation(async (name, description) => Promise.reject({}));
+
+            return request(app)
+                .patch(`${BASE_PATH}/rooms/${roomId}/info`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ name, description })
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
                 });
         });
 
@@ -411,14 +626,17 @@ describe('Test rooms API', () => {
             participants: [admin]
         });
 
+        let findByIdMock;
         let deleteUserMock;
 
         beforeEach(() => {
+            findByIdMock = jest.spyOn(Room, 'findById');
             deleteUserMock = jest.spyOn(Room.prototype, 'deleteParticipant');
         });
 
-        it("Should return 200 when modifying the room's info", () => {
-            deleteUserMock.mockImplementation(async (userId) => Promise.resolve(user));
+        it("Should return 200 when removing participant from room", () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            deleteUserMock.mockImplementation(async (userId) => Promise.resolve(room));
 
             return request(app)
                 .delete(`${BASE_PATH}/rooms/${roomId}/participants/${userId}`)
@@ -426,20 +644,291 @@ describe('Test rooms API', () => {
                 .then((res) => {
                     expect(res.status).toBe(200);
                     expect(res.body.success).toBe(true);
-                    expect(res.body.content.userId).toEqual(userId);
+
+                });
+        });
+
+        it("Should return 400 when data is sent wrong", () => {
+            const wrongUserId = "wrongUserId";
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            deleteUserMock.mockImplementation(async (wrongUserId) => Promise.reject({ errors: 'err'}));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}/participants/${wrongUserId}`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(400);
+                    expect(res.body.success).toBe(false);
 
                 });
         });
 
         it("Should return 401 when the user is not authenticated", () => {
-            deleteUserMock.mockImplementation(async (userId) => Promise.resolve(user));
-
 
             return request(app)
                 .delete(`${BASE_PATH}/rooms/${roomId}/participants/${userId}`)
                 .then((res) => {
                     expect(res.status).toBe(401);
                     expect(res.body).toEqual({});
+                });
+        });
+
+        it("Should return 403 when user is not room\'s admin", () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}/participants/${userId}`)
+                .set('Authorization', `bearer ${userToken}`)
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toBe(false);
+
+                });
+        });
+
+        it("Should return 404 when the room does not exist", () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(false));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}/participants/${userId}`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(404);
+                    expect(res.body.success).toBe(false);
+
+                });
+        });
+
+        it("Should return 500 when an error occurs", () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            deleteUserMock.mockImplementation(async (userId) => Promise.reject({}));
+
+            return request(app)
+                .delete(`${BASE_PATH}/rooms/${roomId}/participants/${userId}`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
+
+                });
+        });
+
+    });
+
+    /* ======================================= GET Room messages ======================================= */
+
+    describe('GET /rooms/:id/messages', () => {
+
+        const roomId = '637d0c328a43d958f6ff661c';
+        
+        const messageId = 'msgId';
+        const songId = '637d0c328a43d958f6ff661a';
+
+        const adminId = '637d0c328a43d958f6ff661f';
+        const userId = '637d0c328a43d958f6ff661b';
+        const token = jwt.generateToken({ id: userId });
+
+        const room = new Room({
+            id: ObjectId(roomId),
+            name: 'name1',
+            description: 'description1',
+            songId: ObjectId(songId),
+            participants: [
+                { userId: ObjectId(adminId), role: Role.ADMIN },
+                { userId: ObjectId(userId), role: Role.NORMAL }
+            ]
+        });
+
+        const messages = [
+            new Message({
+                id: messageId, userId: ObjectId(userId), roomId: ObjectId(roomId), text: 'test text'
+            })
+        ]
+
+        let findByIdMock;
+        let getAllFromRoomIdMock;
+
+        beforeEach(() => {
+            findByIdMock = jest.spyOn(Room, 'findById');
+            getAllFromRoomIdMock = jest.spyOn(Message, 'getAllFromRoomId');
+        });
+
+        it('Should return 200 when getting all the messages of the room', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            getAllFromRoomIdMock.mockImplementation(async (userId, page = 0, limit = 10) => Promise.resolve({ content: messages }));
+
+            return request(app)
+                .get(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    console.log(res.body);
+                    expect(res.status).toBe(200);
+                    expect(res.body.content).toBeArrayOfSize(1);
+                });
+        });
+
+        it('Should return 401 when the user is not authenticated', () => {
+
+            return request(app)
+                .get(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .then((res) => {
+                    expect(res.status).toBe(401);
+                });
+        });
+
+        it('Should return 403 when user is not a room\'s participant', () => {
+            const token = jwt.generateToken({ id: '1234' })
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+
+            return request(app)
+                .get(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it('Should return 404 when room does not exist', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(false));
+
+            return request(app)
+                .get(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(404);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it('Should return 500 when problems occur', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            getAllFromRoomIdMock.mockImplementation(async (userId, page = 0, limit = 10) => {
+                throw new Error('Server error');
+            });
+
+            return request(app)
+                .get(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+    });
+
+    /* ======================================= GET New message in room ======================================= */
+
+    describe('POST /rooms/:id/messages', () => {
+
+        const roomId = '637d0c328a43d958f6ff661c';
+        
+        const messageId = 'msgId';
+        const songId = '637d0c328a43d958f6ff661a';
+
+        const adminId = '637d0c328a43d958f6ff661f';
+        const userId = '637d0c328a43d958f6ff661b';
+        const token = jwt.generateToken({ id: userId });
+
+        const room = new Room({
+            id: ObjectId(roomId),
+            name: 'name1',
+            description: 'description1',
+            songId: ObjectId(songId),
+            participants: [
+                { userId: ObjectId(adminId), role: Role.ADMIN },
+                { userId: ObjectId(userId), role: Role.NORMAL }
+            ]
+        });
+
+        const message = new Message({ id: messageId, userId: ObjectId(userId), roomId: ObjectId(roomId), text: 'test text' })
+
+        let findByIdMock;
+        let insertMessageMock;
+
+        beforeEach(() => {
+            findByIdMock = jest.spyOn(Room, 'findById');
+            insertMessageMock = jest.spyOn(Message, 'insert');
+        });
+
+        it('Should return 201 when creating new message in room', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            insertMessageMock.mockImplementation(async (userId, roomId, text) => Promise.resolve(message));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ text: 'test' })
+                .then((res) => {
+                    console.log(res.body);
+                    expect(res.status).toBe(201);
+                    expect(res.body.success).toBe(true);
+                });
+        });
+
+        it('Should return 400 when getting all the messages of the room', () => {
+            const badText = ''
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            insertMessageMock.mockImplementation(async (userId, roomId, badText) => Promise.reject({ errors: 'err'}));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .send({ text: badText })
+                .then((res) => {
+                    console.log(res.body);
+                    expect(res.status).toBe(400);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it('Should return 401 when the user is not authenticated', () => {
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .then((res) => {
+                    expect(res.status).toBe(401);
+                });
+        });
+
+        it('Should return 403 when user is not a room\'s participant', () => {
+            const token = jwt.generateToken({ id: '1234' })
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(403);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it('Should return 404 when room does not exist', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(false));
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(404);
+                    expect(res.body.success).toBe(false);
+                });
+        });
+
+        it('Should return 500 when problems occur', () => {
+            findByIdMock.mockImplementation(async (roomId) => Promise.resolve(room));
+            insertMessageMock.mockImplementation(async (userId, roomId, badText) => {
+                throw new Error('Server error');
+            });
+
+            return request(app)
+                .post(`${BASE_PATH}/rooms/${roomId}/messages`)
+                .set('Authorization', `bearer ${token}`)
+                .then((res) => {
+                    expect(res.status).toBe(500);
+                    expect(res.body.success).toBe(false);
                 });
         });
 
