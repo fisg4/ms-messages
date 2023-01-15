@@ -115,7 +115,7 @@ const createRoom = async (req, res) => {
   } = req.body;
 
   const finalParticipants = [{ userId: ObjectId(userId), role: Role.ADMIN }];
-  participants.forEach(participantId => finalParticipants.push({
+  participants?.forEach(participantId => finalParticipants.push({
     userId: ObjectId(participantId)
   }));
 

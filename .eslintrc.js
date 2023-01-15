@@ -17,6 +17,7 @@ module.exports = {
     'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
     'no-use-before-define': 0,
     'space-before-function-paren': 0,
+    'linebreak-style': 0,
     'no-underscore-dangle': 0,
     radix: 0,
   },
