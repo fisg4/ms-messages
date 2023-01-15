@@ -46,8 +46,8 @@ roomSchema.statics.getAllFromUser = async (userId, page = 0, limit = 10) => {
 };
 
 roomSchema.methods.modifyInfo = function modifyInfo(name, description) {
-  this.name = name ?? this.name;
-  this.description = description ?? this.description;
+  this.name = name || this.name;
+  this.description = description || this.description;
   return this.save();
 };
 
@@ -78,7 +78,7 @@ roomSchema.methods.addParticipants = function addParticipants(newParticipantIds)
 };
 
 roomSchema.methods.deleteParticipant = function deleteParticipant(participantId) {
-  if (this.checkUserIsAdmin(participantId) || !this.checkUserIsParticipant(participantId)) {
+  if (this.checkUserIsAdmin(participantId)) {
     return this;
   }
 

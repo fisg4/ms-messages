@@ -54,6 +54,11 @@ messageSchema.statics.insert = (userId, roomId, text, replyToId) => {
 
 messageSchema.methods.updateText = function updateText(text) {
   this.text = text;
+  // in case it was already translated, remove translation
+  if (this.translatedText) {
+    this.translatedText = null;
+  }
+
   return this.save();
 };
 

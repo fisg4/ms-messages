@@ -761,7 +761,6 @@ describe('Test rooms API', () => {
                 .get(`${BASE_PATH}/rooms/${roomId}/messages`)
                 .set('Authorization', `bearer ${token}`)
                 .then((res) => {
-                    console.log(res.body);
                     expect(res.status).toBe(200);
                     expect(res.body.content).toBeArrayOfSize(1);
                 });
@@ -861,7 +860,6 @@ describe('Test rooms API', () => {
                 .set('Authorization', `bearer ${token}`)
                 .send({ text: 'test' })
                 .then((res) => {
-                    console.log(res.body);
                     expect(res.status).toBe(201);
                     expect(res.body.success).toBe(true);
                 });
@@ -877,7 +875,6 @@ describe('Test rooms API', () => {
                 .set('Authorization', `bearer ${token}`)
                 .send({ text: badText })
                 .then((res) => {
-                    console.log(res.body);
                     expect(res.status).toBe(400);
                     expect(res.body.success).toBe(false);
                 });
