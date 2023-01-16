@@ -1,5 +1,5 @@
 paths:
-  /messages/:id:
+  /messages/{id}:
     get:
       tags:
         - Messages
@@ -53,7 +53,7 @@ paths:
           description: "User is not the author of the message"
         "404":
           description: "Message not found"
-  /messages/:id/report:
+  /messages/{id}/report:
     post:
       tags:
         - Messages
@@ -116,7 +116,7 @@ paths:
           description: Validation errors
         "404":
           description: Message not found
-  /messages/:id/translate:
+  /messages/{id}/translate:
     post:
       tags:
         - Messages
@@ -140,7 +140,7 @@ paths:
           description: Authorization required
         "404":
           description: "Message not found"
-  /messages/:id/unban:
+  /messages/{id}/unban:
     patch:
       tags:
         - Messages

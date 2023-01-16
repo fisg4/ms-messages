@@ -30,7 +30,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/PaginatedRooms"
         "401":
-          description: Authoritazation required
+          description: Authorization required
     post:
       tags:
         - Rooms
@@ -61,8 +61,8 @@ paths:
         "400":
           description: Validation errors
         "401":
-          description: Authoritazation required
-  /rooms/:id:
+          description: Authorization required
+  /rooms/{id}:
     get:
       tags:
         - Rooms
@@ -85,7 +85,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Room"
         "401":
-          description: Authoritazation required
+          description: Authorization required
         "404":
           description: "Room not found"
     delete:
@@ -111,7 +111,7 @@ paths:
           description: "User is not the admin of the room"
         "404":
           description: "Room not found"
-  /rooms/:id/participants:
+  /rooms/{id}/participants:
     post:
       tags:
         - Rooms
@@ -142,7 +142,7 @@ paths:
           description: "User is not the admin of the room"
         "404":
           description: "Room not found"
-  /rooms/:id/participants/:participantId:
+  /rooms/{id}/participants/{participantId}:
     delete:
       tags:
         - Rooms
@@ -175,7 +175,7 @@ paths:
           description: "User is not the admin of the room"
         "404":
           description: "Room not found"
-  /rooms/:id/info:
+  /rooms/{id}/info:
     patch:
       tags:
         - Rooms
@@ -212,7 +212,7 @@ paths:
           description: "User is not the admin of the room"
         "404":
           description: "Room not found"
-  /rooms/:id/messages:
+  /rooms/{id}/messages:
     get:
       tags:
         - Rooms
