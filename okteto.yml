@@ -9,6 +9,7 @@ deploy:
     --set messagesNodeEnv=$MESSAGES_NODE_ENV
     --set messagesDeeplKey=$DEEPL_KEY
     --set messagesJwtSecret=$JWT_SECRET
+    --set messagesSupportHost=$SUPPORT_HOST
 
 dev:
   ms-messages:

@@ -42,21 +42,11 @@ spec:
                   secretKeyRef:
                     name: messages-auth
                     key: jwt_secret
-            - name: SONGS_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: hosts
-                  key: songs_host
             - name: SUPPORT_HOST
               valueFrom:
                 secretKeyRef:
-                  name: hosts
+                  name: messages-hosts
                   key: support_host
-            - name: USERS_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: hosts
-                  key: users_host
           ports:
             - name: http
               containerPort: 3000

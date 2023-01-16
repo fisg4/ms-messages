@@ -6,8 +6,6 @@ messagesNodeEnv: prod
 
 messagesDeeplKey: lorem
 
-songsHost: http://localhost:3001
-supportHost: http://localhost:3002
-usersHost: http://localhost:3003
+messagesSupportHost: http://localhost:3002
 
 messagesJwtSecret: secret
