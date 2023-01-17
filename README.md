@@ -1,34 +1,99 @@
-# Messages microservice
+![FastMusik](https://fastmusik-fastmusik-marmolpen3.cloud.okteto.net/static/media/fastMusik_logo.42183ad8193e5a2bba20.png)
 
-**URL**: chat/api/\<VERSION\>
+# Microservicio de mensajes
 
-## Schema
 
-### Room
+## Nivel de acabado
 
-![image](https://user-images.githubusercontent.com/56023983/201470559-8864be20-5cd3-49e9-bc36-9cc38e744ebe.png)
 
-#### CRUD
+## Descripción de la aplicación
 
-- (CREATE) Create room
-- (READ) Get room
-- (UPDATE) Add/remove participants
-- (DELETE) Delete room
+Incluir enlace al vídeo demostración
 
-#### Room routes
+## Descomposición en microservicios
 
-- GET /rooms
-- GET /rooms/:id
-- POST /rooms
-- PATCH /rooms/:id/participants
-- DELETE /rooms/:id
 
-### Message
 
-![image](https://user-images.githubusercontent.com/56023983/201470722-15e999d8-0baf-4900-9e51-8f7164391299.png)
+## Customer Agreement
 
-#### Message routes
 
-- GET /messages
-- POST /messages
-- PATCH /messages/:id
+### Análisis de la capacidad
+
+
+### Planes de precios y justificación
+
+
+## Descripción de la API REST
+
+
+## Requisitos
+
+
+### Requisitos del microservicio
+
+#### API REST con un CRUD completo
+
+
+#### Mecanismo de autenticación
+
+
+#### Frontend
+
+
+#### Desplegado y accesible en la nube
+
+
+#### Versionado de la API
+
+
+#### Documentación de la API
+
+Incluir el enlace a la documentación de Swagger
+
+#### Persistencia de datos
+
+
+#### Validación de los datos
+
+
+#### Gestión de código e integración continua
+
+
+#### Imagen de Docker
+
+
+#### Pruebas de componente
+
+#### Pruebas de integración
+
+
+#### Frontend con rutas y navegación
+
+
+#### Redux
+
+
+#### API externa
+
+
+#### Mecanismo de autenticación
+
+
+#### Mecanismo de rollback
+
+
+### Requisitos de la aplicación
+
+#### Interacción entre microservicios
+
+
+#### Frontend común
+
+
+#### API Gateway
+
+
+#### Autenticación homogénea
+
+
+## Análisis de los esfuerzos
