@@ -5,13 +5,13 @@
 
 ## Nivel de acabado
 
+El nivel de acabado final del microservicio es **9** y a través de los siguientes epígrafes se puede extraer la justificación de ese nivel.
 
 ## Descripción de la aplicación
 
 Incluir enlace al vídeo demostración
 
 ## Descomposición en microservicios
-
 
 
 ## Customer Agreement
@@ -28,72 +28,78 @@ Incluir enlace al vídeo demostración
 
 ## Requisitos
 
+En esta sección se listan los requisitos que se han cumplido durante el desarrollo de la aplicación, diferenciando aquellos relativos al propio microservicio y aquellos relacionados con la plataforma en general.
 
 ### Requisitos del microservicio
 
-#### API REST con un CRUD completo
+Como se ha mencionado anteriormente, el nivel de acabado del microservicio es el 9 y, por tanto, además de todos los requisitos de nivel básico, se han implementado 5 avanzados.
+
+#### API REST con un CRUD completo ✅
 
 
-#### Mecanismo de autenticación
+#### Mecanismo de autenticación ✅
 
 
-#### Frontend
+#### Frontend ✅
 
 
-#### Desplegado y accesible en la nube
+#### Desplegado y accesible en la nube ✅
 
 
-#### Versionado de la API
+#### Versionado de la API ✅
 
 
-#### Documentación de la API
+#### Documentación de la API ✅
 
-Incluir el enlace a la documentación de Swagger
+La API ha sido documentada mediante el servicio Swagger y es accesible a través de la URL de producción del microservicio (pulse [aquí](https://messages-fastmusik-marmolpen3.cloud.okteto.net/docs/) para navegar hasta ella)
 
-#### Persistencia de datos
-
-
-#### Validación de los datos
+#### Persistencia de datos ✅
 
 
-#### Gestión de código e integración continua
+#### Validación de los datos ✅
 
 
-#### Imagen de Docker
+#### Gestión de código e integración continua ✅
 
 
-#### Pruebas de componente
-
-#### Pruebas de integración
+#### Imagen de Docker ✅
 
 
-#### Frontend con rutas y navegación
+#### Pruebas de componente ✅
 
 
-#### Redux
+#### Pruebas de integración ✅
 
 
-#### API externa
+#### Frontend con rutas y navegación ✅
 
 
-#### Mecanismo de autenticación
+#### Redux ✅
 
 
-#### Mecanismo de rollback
+#### API externa ✅
+
+
+#### Mecanismo de autenticación mediante JWT ✅
+
+
+#### Mecanismo de rollback ✅
 
 
 ### Requisitos de la aplicación
 
-#### Interacción entre microservicios
+Para obtener una calificación de 9 se han implementado los siguientes requisitos de aplicación avanzada.
+
+#### Interacción entre microservicios ✅
 
 
-#### Frontend común
+#### Frontend común ✅
 
 
-#### API Gateway
+#### API Gateway ✅
 
 
-#### Autenticación homogénea
+#### Autenticación homogénea ✅
 
 
 ## Análisis de los esfuerzos
