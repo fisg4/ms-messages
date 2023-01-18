@@ -19,6 +19,7 @@ Incluir enlace al vídeo demostración
 
 ### Análisis de la capacidad
 
+El análisis de la capacidad, realizado en conjunto por todos los miembros del equipo, puede encontrarse en la wiki del repositorio destinado al cliente (haga click [aquí](https://github.com/fisg4/client/wiki/An%C3%A1lisis-de-la-capacidad) para leerlo).
 
 ### Planes de precios y justificación
 
@@ -36,6 +37,9 @@ Como se ha mencionado anteriormente, el nivel de acabado del microservicio es el
 
 #### API REST con un CRUD completo ✅
 
+El desarrollo de este microservicio tiene como base el desarrollo de una API REST para las dos entidades creadas, Room y Message. De ambas, se eligió Room para crear un CRUD completo.
+
+Para llegar a la versión final primero se partió de una simple definición de las rutas, las cuales usaban una base de datos en memoria. Posteriormente se añadieron la persistencia y validación de los datos a través de MongoDB en su servicio SaaS (Mongo Atlas) y la librería Mongoose. Tras ello se mejoró el tratamiento de errores, la eficiencia de las llamadas y se incluyó paginación. Por último, se añadieron las rutas de integración con el microservicio de soporte y con la API externa.
 
 #### Mecanismo de autenticación ✅
 
@@ -103,3 +107,9 @@ Para obtener una calificación de 9 se han implementado los siguientes requisito
 
 
 ## Análisis de los esfuerzos
+
+En esta sección se adjunta el informe de las horas de esfuerzo dedicadas al desarrollo de este microservicio y de los proyectos comunes del grupo.
+
+### Jorge Andrea Molina
+
+Su contribución al proyecto se divide en aproximadamente 80 horas dedicadas al desarrollo (puede consultar el registro de Clockify pulsando [aquí](https://drive.google.com/file/d/1Or4K0Unow6DmFME9oxRQ6wrBLU9v3MoO/view?usp=sharing)) y unas 8 horas participando y gestionando las reuniones de planificación, trabajo y seguimiento del grupo.
