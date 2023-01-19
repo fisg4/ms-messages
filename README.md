@@ -54,12 +54,9 @@ Como puntos destacables están el uso de la API externa de SendGrid para enviar 
 ## Customer Agreement
 El customer agreement de la aplicación se puede consultar <a href="https://fastmusik-fastmusik-marmolpen3.cloud.okteto.net/customer-agreement">aquí</a>.
 
-### Análisis de la capacidad
+### Análisis de la capacidad y plan de precios
 
-El análisis de la capacidad, realizado en conjunto por todos los miembros del equipo, puede encontrarse en la wiki del repositorio destinado al cliente (haga click [aquí](https://github.com/fisg4/client/wiki/An%C3%A1lisis-de-la-capacidad) para leerlo).
-
-### Planes de precios y justificación
-El plan de precios se encuentra en el siguiente <a href="https://fastmusik-fastmusik-marmolpen3.cloud.okteto.net/pricing">enlace</a>
+El análisis de la capacidad, realizado en conjunto por todos los miembros del equipo, puede encontrarse en la wiki del repositorio destinado al cliente (haga click [aquí](https://github.com/fisg4/client/wiki/An%C3%A1lisis-de-la-capacidad) para leerlo). Asimismo, el plan de precios se encuentra en el siguiente <a href="https://fastmusik-fastmusik-marmolpen3.cloud.okteto.net/pricing">enlace</a>.
 
 ## Descripción de la API REST
 La API REST se compone de dos entidades principales: **Message**, que representa un mensaje enviado por un usuario, y **Room**, que representa la sala en la que una conversación entre dos usuarios tiene lugar.
