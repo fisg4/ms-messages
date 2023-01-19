@@ -15,8 +15,6 @@ FastMusik presenta gran parte de las características de las redes sociales y la
 
 Además, FastMusik es una aplicación que cuenta con el respaldo de un sistema de soporte, mediante el cual es posible el envío de tickets de incidencias o solicitudes de cambios, así como reportes de mensajes inadecuados que se envían por los chats.
 
-**<div style="color:red; text-transform: uppercase; font-size: 2em;">Incluir enlace al vídeo demostración</div>**
-
 ## Descomposición en microservicios
 
 FastMusik se divide en 5 microservicios: usuarios, canciones, mensajería, soporte y, por último, una API Gateway. Todos ellos se integran a través del backend para compartir y complementar la información. Estos se integran a su vez con APIs externas como DeepL, Spotify, SendGrid y PurgoMalum. Por otro lado, en la API Gateway se localizan funciones de centralización de operaciones, principalmente el mapeo de endpoints de los diferentes microservicios, para ser un único punto de consumo para el frontend, y para la autenticación de usuarios y generación de JWT.
