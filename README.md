@@ -52,14 +52,14 @@ El modelado de datos de este microservicio se basa en las entidades de Tickets y
 Como puntos destacables están el uso de la API externa de SendGrid para enviar correos, la tolerancia a fallos desplegando un cliente adicional para la gestión de incidencias y el mecanismo de rollback incluido en la integración con los diferentes microservicios.
 
 ## Customer Agreement
-
+El customer agreement de la aplicación se puede consultar <a href="https://fastmusik-fastmusik-marmolpen3.cloud.okteto.net/customer-agreement">aquí</a>.
 
 ### Análisis de la capacidad
 
 El análisis de la capacidad, realizado en conjunto por todos los miembros del equipo, puede encontrarse en la wiki del repositorio destinado al cliente (haga click [aquí](https://github.com/fisg4/client/wiki/An%C3%A1lisis-de-la-capacidad) para leerlo).
 
 ### Planes de precios y justificación
-
+El plan de precios se encuentra en el siguiente <a href="https://fastmusik-fastmusik-marmolpen3.cloud.okteto.net/pricing">enlace</a>
 
 ## Descripción de la API REST
 La API REST se compone de dos entidades principales: **Message**, que representa un mensaje enviado por un usuario, y **Room**, que representa la sala en la que una conversación entre dos usuarios tiene lugar.
@@ -143,7 +143,7 @@ Las pruebas de componente se pueden encontrar en:
 
 #### Pruebas de integración ✅
 
-Con respecto a las pruebas de integración con la base de datos, se han realizado un total de 22 tests (incluyéndose sendos componentes: *Message* y *Room*). Con estos 22 tests, tenemos una covertura total del 100% en las funciones de modelos, que son las encargadas de realizar la comunicación con la base de datos.
+Con respecto a las pruebas de integración con la base de datos, se han realizado un total de 22 tests (incluyéndose sendos componentes: *Message* y *Room*). Con estos 22 tests, tenemos una cobertura total del 100% en las funciones de modelos, que son las encargadas de realizar la comunicación con la base de datos.
 
 Las pruebas de integración con la base de datos se pueden encontrar <a href="https://github.com/fisg4/ms-messages/tree/main/tests/integration">aquí</a>.
 
